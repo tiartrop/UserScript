@@ -1,0 +1,9 @@
+{
+  "name": "bilibili-userscript",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "bilibili自用脚本",
+  "author": "tiartrop",
+  "license": "MIT"
+}

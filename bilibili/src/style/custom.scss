@@ -1,0 +1,239 @@
+@import url(https://s1.hdslb.com/bfs/seed/bplus-common/icon-font/2.1.2/bp-icon-font.css);
+$scrollbarColor: rgba(171, 171, 171, 0.4);
+$descTextColor: #6d757a;
+$borderColor: #f9f9f9;
+
+// 创作团队
+.up-panel-container .members-info-container .membersinfo-normal {
+  position: relative;
+
+  .header {
+    display: none;
+  }
+
+  .container {
+    padding-top: unset;
+    max-height: 86px;
+  }
+}
+
+.members-button {
+  position: absolute;
+  border: solid #757575;
+  border-width: 0 2px 2px 0;
+  display: inline-block;
+  margin: 2px;
+  padding: 4px;
+  cursor: pointer;
+  transition: .5s ease;
+}
+
+// 播放器底部选集
+.bpx-player-ctrl-eplist-menu-item:has(span),
+.bpx-player-ctrl-eplist-multi-menu-item:has(span.video-percent) {
+  padding-right: 5em !important;
+}
+
+.bpx-player-ctrl-eplist-menu-item span,
+.bpx-player-ctrl-eplist-multi-menu-item span.video-percent {
+  position: absolute;
+  top: 0;
+  right: 14px;
+}
+
+// 评论收起按钮
+.comment-fold-button {
+  position: sticky;
+  bottom: 12px;
+  left: 100%;
+  font-size: 14px;
+  line-height: 28px;
+  padding: 0 12px;
+  color: #757575;
+  background-color: #f4f4f4;
+  border: unset;
+  cursor: pointer;
+  z-index: 10;
+  transition: .5s ease;
+}
+
+// 视频倒序按钮
+.reverse-button {
+  padding: 0 4px;
+  margin: 0 4px;
+  border: unset;
+  cursor: pointer;
+  background-color: transparent;
+
+  &:hover {
+    color: var(--brand_blue) !important;
+  }
+}
+
+// 视频右键窗口倍速按钮
+.play-rate-menu {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  &:hover {
+    background: unset !important;
+  }
+
+  .play-rate-menu-item {
+    padding: 0 1em;
+
+    &:active {
+      color: var(--brand_blue);
+    }
+
+    &:hover {
+      background-color: hsla(0, 0%, 100%, .12);
+      border-radius: 2px;
+    }
+  }
+
+  .play-rate-menu-item.active {
+    color: var(--brand_blue);
+  }
+}
+
+// 控制面板
+#setting-panel-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 22233;
+  width: 100%;
+  height: 100%;
+  display: none;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.setting-panel-wrapper {
+  font-size: 14px;
+  width: 30em;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  border-radius: 8px;
+  line-height: 1.5;
+  user-select: none;
+}
+
+.setting-panel-wrapper *{
+  box-sizing: content-box;
+}
+
+.setting-panel-title {
+  font-size: 16px;
+  font-weight: 700;
+  padding: 10px 20px;
+}
+
+.setting-panel-option-main {
+  display: flex;
+  width: 100%;
+  border-top: .5px solid $borderColor;
+  border-bottom: .5px solid $borderColor;
+}
+
+.setting-panel-option-header {
+  flex: none;
+  width: 100px;
+  padding: 20px 0 20px 20px;
+  border-right: 10px solid $borderColor;
+}
+
+.setting-panel-option-header ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.setting-panel-tab-nav li.tab-active {
+  color: var(--brand_blue);
+  box-shadow: -2px 0 var(--brand_blue) inset;
+  font-weight: bold;
+}
+
+.setting-panel-tab-nav button {
+  width: 100%;
+  height: 28px;
+  line-height: 28px;
+  padding: 0;
+  border: none;
+  color: inherit;
+  background: none;
+  font-weight: inherit;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #00adec1a;
+    border-radius: 4px;
+  }
+}
+
+.setting-panel-option-body {
+  width: 100%;
+  min-height: 200px;
+  max-height: 450px;
+  padding: 10px;
+  overflow: auto;
+
+}
+
+.setting-panel-option-item {
+  padding: 8px 12px;
+  border-radius: 4px;
+}
+
+.setting-panel-option-item-switch {
+  float: right;
+  display: flex;
+  align-items: center;
+  width: 40px;
+  height: 20px;
+  padding: 2px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.setting-panel-option-item-switch[data-status="off"] {
+  justify-content: flex-start;
+  background-color: #ccc;
+}
+
+.setting-panel-option-item-switch[data-status="on"] {
+  justify-content: flex-end;
+  background-color: var(--brand_blue);
+}
+
+.setting-panel-option-item-switch::after {
+  content: '';
+  width: 20px;
+  height: 20px;
+  background-color: #fff;
+  border-radius: 4px;
+}
+
+#setting-panel-note {
+  margin: 10px 0;
+  align-self: center;
+  font-size: 14px;
+  color: $descTextColor;
+}
+
+#setting-panel-close-btn {
+  position: absolute;
+  padding: 4px;
+  top: 10px;
+  right: 16px;
+  color: #ccc;
+  cursor: pointer;
+  user-select: none;
+}
