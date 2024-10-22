@@ -1,19 +1,17 @@
 <div align="center">
   <h1>bilibili-userscript</h1>
-  <div style="display: flex; justify-content: center">
-  <img alt="logo" src="static/bilibili-brands-solid.svg" width="20" style="margin-right: 4px">
-    bilibili&thinsp;自用脚本
-  </div>
+
+  bilibili&thinsp;自用脚本
 </div>
 
 ## 环境要求
 
-- 浏览器：推荐使用 Chrome, Edge, Firefox 或 Opera（最好 Chrome/Edge >=105 、Firefox >=121 以支持`:has()`伪类）。
+- 浏览器：推荐使用 Chrome, Edge, Firefox 或 Opera（最好 Chrome/Edge >=105 、Firefox >=121 、Opera >=91 以支持`:has()`伪类）。
 - 用户脚本管理器：推荐使用 [Tampermonkey](https://www.tampermonkey.net) 或 [Violentmonkey](https://violentmonkey.github.io)。
 
 ## 安装使用
 
-请自行编译使用。
+请自行编译安装。
 
 登录bilibili后打开任意B站页面，点击脚本管理器找到此脚本的“自定义设置”。
 
