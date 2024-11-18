@@ -37,6 +37,24 @@
   统一滚动条样式
 */
 
+.ps .ps__rail-x.ps--clicking,
+.ps .ps__rail-x:focus,
+.ps .ps__rail-x:hover,
+.ps .ps__rail-y.ps--clicking,
+.ps .ps__rail-y:focus,
+.ps .ps__rail-y:hover {
+  width: 14px !important;
+  background-color: transparent !important;
+}
+
+.ps__thumb-x,
+.ps__thumb-y {
+  background-color: $scrollbarColor !important;
+  background-clip: padding-box !important;
+  border: 4px solid transparent !important;
+  border-radius: 8px !important;
+}
+
 // 弹幕列表
 .bpx-player-auxiliary .bpx-player-dm-wrap .bui-long-list-wrap,
 // 章节列表
@@ -332,6 +350,7 @@ div[class^='SectionSelector_selectorDropdown' i],
   display: none !important;
 }
 
+.announcement-wrapper,
 #rank-list-ctnr-box .tabs .pilot {
   display: none;
 }
