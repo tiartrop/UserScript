@@ -42,9 +42,9 @@ export default function bilibiliConfig(name = parentDirectory, entry = `${parent
       format: 'iife',
       file: `${parentDirectory}/dist/${name}.user.js`,
       banner: `
-//-- Don't run on frames or iframes
-if (window.top !== window.self) return;
-      `,
+// 防止特殊直播间重复执行脚本
+if (location.href.match(/live.bilibili.com\\/[0-9]+/) && unsafeWindow.__initialState && unsafeWindow.__initialState.BaseInfo) return;
+`,
       footer: '',
       globals: {
         '@violentmonkey/dom': 'VM',

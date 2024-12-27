@@ -99,6 +99,6 @@ containerElement.querySelectorAll('.setting-panel-option-item-switch').forEach(s
 
 containerElement.querySelector('#setting-panel-close-btn').onclick = () => containerElement.style.display = 'none';
 
-GM_registerMenuCommand('自定义设置', () => containerElement.style.display = 'flex');
+GM_registerMenuCommand('自定义设置', () => containerElement.style.display = 'block');
 
 export { menu_value, containerElement };

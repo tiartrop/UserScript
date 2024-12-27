@@ -4,6 +4,7 @@ const trackUrlParams = [
   'from_spmid',
   'is_story_h5',
   'launch_id',
+  'liteVersion',
   'live_from',
   'mid',
   'session_id',

@@ -255,6 +255,10 @@ div[class^='SectionSelector_selectorDropdown' i],
   box-shadow: none;
 }
 
+#bilibili-player.mode-webscreen {
+  z-index: 2000;
+}
+
 // 视频工具栏
 .video-toolbar-container {
   padding: 10px 0 !important;
@@ -355,6 +359,11 @@ div[class^='SectionSelector_selectorDropdown' i],
   display: none;
 }
 
+// 头衔装扮
+.chat-history-list .chat-item.danmaku-item .title-label {
+  display: none;
+}
+
 #aside-area-vm {
 
   .rank-list-section {
@@ -388,6 +397,10 @@ div[class^='SectionSelector_selectorDropdown' i],
   .pay-note-panel {
     background: transparent;
   }
+
+  .control-panel-icon-row .icon-left-part svg {
+    filter: drop-shadow(0 0 .75rem rgba(22, 22, 22, .2));
+  }
 }
 
 // 深色背景
@@ -410,6 +423,10 @@ html[lab-style*="dark"] #aside-area-vm {
 // 网页模式下弹幕列表背景
 .player-full-win #aside-area-vm {
   background-color: #fff;
+
+  .control-panel-icon-row .icon-left-part svg {
+    filter: drop-shadow(0 0 .75rem rgba(22, 22, 22, .5));
+  }
 }
 
 html[lab-style*="dark"] .player-full-win #aside-area-vm {
