@@ -364,6 +364,11 @@ div[class^='SectionSelector_selectorDropdown' i],
   display: none;
 }
 
+// 聊天推流
+.chat-history-list .chat-item.common-danmuku-msg {
+  display: none;
+}
+
 #aside-area-vm {
 
   .rank-list-section {
