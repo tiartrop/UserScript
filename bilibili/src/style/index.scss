@@ -405,6 +405,10 @@ div[class^='SectionSelector_selectorDropdown' i],
 
   .control-panel-icon-row .icon-left-part svg {
     filter: drop-shadow(0 0 .75rem rgba(22, 22, 22, .2));
+
+    path{
+      fill: #fff;
+    }
   }
 }
 
@@ -429,8 +433,8 @@ html[lab-style*="dark"] #aside-area-vm {
 .player-full-win #aside-area-vm {
   background-color: #fff;
 
-  .control-panel-icon-row .icon-left-part svg {
-    filter: drop-shadow(0 0 .75rem rgba(22, 22, 22, .5));
+  .control-panel-icon-row .icon-left-part svg path{
+    fill: rgba(102, 102, 102, .4);
   }
 }
 
@@ -461,7 +465,7 @@ html[lab-style*="dark"] .player-full-win #aside-area-vm {
 }
 
 // mini播放
-.live-player-ctnr.minimal {
+.player-ctnr .live-player-ctnr.minimal {
   border-radius: 0;
   padding: 0;
   box-shadow: 0 0 20px 0 rgba(0, 85, 255, .1);
