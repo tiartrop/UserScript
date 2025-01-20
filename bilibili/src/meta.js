@@ -5,7 +5,8 @@
 // @author      process.env.AUTHOR
 // @match       *://*.bilibili.com/*
 // @exclude     *://message.bilibili.com/*
-// @exclude     *://live.bilibili.com/p/html/cny-danmu/*
+// @exclude     *://*.bilibili.com/blackboard/newplayer.html*
+// @exclude     *://*.bilibili.com/p/html/cny-danmu/*
 // @icon        https://www.bilibili.com/favicon.ico
 // @grant       GM_addStyle
 // @grant       GM_openInTab

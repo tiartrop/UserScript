@@ -4,6 +4,7 @@
 #slide_ad,
 .ad-report,
 .pop-live-small-mode,
+.video-card-ad-small,
 .video-page-game-card-small,
 .video-page-special-card-small,
 .video-page-operator-card-small,
@@ -149,16 +150,20 @@ div[class^='SectionSelector_selectorDropdown' i],
   overflow: auto !important;
 }
 
-.right-container {
-  min-height: unset !important;
+#sections-vm .right-container {
+  min-height: unset;
 
   .room-info-cntr {
-    height: unset !important;
+    height: unset;
   }
 
   .content-wrapper {
-    height: unset !important;
-    overflow: auto !important;
+    height: unset;
+    overflow: auto;
+
+    .room-announce-empty + .button-edit{
+      display: none;
+    }
   }
 }
 

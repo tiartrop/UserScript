@@ -173,10 +173,10 @@ const biliHelper = {
       document.querySelector('.bpx-player-ctrl-eplist-menu-wrap').style.maxWidth = '360px';
       [...ele.children].forEach((child, index) => {
         if (!child.firstElementChild) {
-          child.setAttribute('title', `${child.textContent}`);
+          child.setAttribute('title', `${child.textContent.trim()}`);
           child.innerHTML = `${child.textContent}<span>${videoPercentArr[index]}%</span>`;
         } else if (child.lastElementChild.className === 'bpx-player-ctrl-eplist-multi-menu-item-text') {
-          child.setAttribute('title', `${child.textContent}`);
+          child.setAttribute('title', `${child.textContent.trim()}`);
           child.innerHTML += `<span class="video-percent">${videoPercentArr[index]}%</span>`;
         }
       });
