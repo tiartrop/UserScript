@@ -1,6 +1,7 @@
 import { drag } from '@/utils/commonUtils';
 
 const menus = [
+  ['视频', 'widerVideoPanelFit', '加宽视频布局', GM_getValue('widerVideoPanelFit', true)],
   ['视频', 'enableVideoPlayRate', '右键小窗倍速', GM_getValue('enableVideoPlayRate', true)],
   ['视频', 'enableVideoReverse', '播放列表倒序', GM_getValue('enableVideoReverse', true)],
   ['视频', 'showVidoPercent', '分P视频显示百分比时长', GM_getValue('showVidoPercent', true)],

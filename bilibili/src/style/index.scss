@@ -161,7 +161,7 @@ div[class^='SectionSelector_selectorDropdown' i],
     height: unset;
     overflow: auto;
 
-    .room-announce-empty + .button-edit{
+    .room-announce-empty+.button-edit {
       display: none;
     }
   }
@@ -237,6 +237,11 @@ div[class^='SectionSelector_selectorDropdown' i],
   }
 }
 
+// 投稿人
+.upinfo-btn-panel .follow-btn {
+  max-width: unset !important;
+}
+
 // 推荐视频
 #reco_list .split-line,
 .recommend_title__WVBlM {
@@ -258,6 +263,21 @@ div[class^='SectionSelector_selectorDropdown' i],
 #playerWrap #bilibili-player-placeholder {
   -webkit-box-shadow: none;
   box-shadow: none;
+}
+
+#bilibili-player.mode-webscreen {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+#mirror-vdcon.video-container-v1 .right-container {
+  width: 390px;
+}
+
+@media (min-width: 1681px) {
+  #mirror-vdcon.video-container-v1 .right-container {
+    width: 451px;
+  }
 }
 
 #bilibili-player.mode-webscreen {
@@ -411,7 +431,7 @@ div[class^='SectionSelector_selectorDropdown' i],
   .control-panel-icon-row .icon-left-part svg {
     filter: drop-shadow(0 0 .75rem rgba(22, 22, 22, .2));
 
-    path{
+    path {
       fill: #fff;
     }
   }
@@ -438,7 +458,7 @@ html[lab-style*="dark"] #aside-area-vm {
 .player-full-win #aside-area-vm {
   background-color: #fff;
 
-  .control-panel-icon-row .icon-left-part svg path{
+  .control-panel-icon-row .icon-left-part svg path {
     fill: rgba(102, 102, 102, .4);
   }
 }
