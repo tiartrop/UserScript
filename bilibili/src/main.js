@@ -50,7 +50,7 @@ const getVideoLengthPercent = (arr) => {
 };
 
 function calVideoPageSize() {
-  const widerMode = m('widerVideoPanelFit')
+  const widerMode = m('widerVideoPanelFit');
   const isWide = document.querySelector('.bpx-player-ctrl-wide.bpx-state-entered');
   const windowWidth = window.innerWidth;
 
@@ -182,13 +182,21 @@ const biliHelper = {
       }
     }
   },
-  // 视频分P显示时长百分比
-  videoBoxLength(ele) {
-    videoDurationEle = [];
-    if (unsafeWindow.__INITIAL_STATE__) videoLength = unsafeWindow.__INITIAL_STATE__.videoData.videos;
-    else videoLength = Number.parseInt(ele.innerHTML.match(/(?<=\/)\d+(?=\))/g));
+  // 分P显示序号
+  pVideoOrder(ele) {
+    if (ele.children.length === videoLength) {
+      [...ele.children].forEach((child, index) => {
+        if (child.firstElementChild.className === 'title' && !child.firstElementChild.lastElementChild.childElementCount)
+          child.firstElementChild.lastElementChild.innerHTML = `<span>P${index + 1} ${child.firstElementChild.textContent}</span>`;
+
+        if (child.firstElementChild.className === 'bpx-player-ctrl-eplist-multi-menu-item-text' && !child.firstElementChild.childElementCount)
+          child.firstElementChild.innerHTML = `<span>P${index + 1} ${child.firstElementChild.textContent}</span>`;
+      }
+      );
+    }
   },
-  videoBoxPercent(ele) {
+  // 分P显示时长百分比
+  pVideoBoxPercent(ele) {
     videoDurationEle.push(ele);
     if (videoDurationEle.length === videoLength) {
       const lengthArr = videoDurationEle.map(ele => ele.firstElementChild ? ele.lastElementChild.innerHTML : ele.innerHTML);
@@ -198,15 +206,15 @@ const biliHelper = {
       });
     }
   },
-  videoSelectMenu(ele) {
+  pVideoSelectPercent(ele) {
     if (ele.children.length === videoDurationEle.length) {
       GM_addStyle(`.bpx-player-ctrl-eplist-menu-wrap{max-width: 360px;}`);
       [...ele.children].forEach((child, index) => {
         if (!child.firstElementChild) {
-          child.setAttribute('title', `${child.textContent.trim()}`);
+          child.setAttribute('title', `${child.textContent.trim().replace(/^P\d+\s/, '')}`);
           child.innerHTML = `${child.textContent}<span>${videoPercentArr[index]}%</span>`;
         } else if (child.lastElementChild.className === 'bpx-player-ctrl-eplist-multi-menu-item-text') {
-          child.setAttribute('title', `${child.textContent.trim()}`);
+          child.setAttribute('title', `${child.textContent.trim().replace(/^P\d+\s/, '')}`);
           child.innerHTML += `<span class="video-percent">${videoPercentArr[index]}%</span>`;
         }
       });
@@ -354,10 +362,15 @@ const biliHelper = {
     window.addEventListener('resize', changePlayListHeight);
     window.addEventListener('popstate', changePlayListHeight);
 
+    if (unsafeWindow.__INITIAL_STATE__ && unsafeWindow.__INITIAL_STATE__.videoData) videoLength = unsafeWindow.__INITIAL_STATE__.videoData.videos;
+
+    const showVideoOrder = debounce(() => {
+      setDomBySelector([this.pVideoOrder], ['.video-pod__list.multip', '.bpx-player-ctrl-eplist-episodes-content'], false);
+    }, 300);
     const showVideoPercent = debounce(() => {
-      setDomBySelector([this.videoBoxLength], ['.cur-page', '.video-pod .video-pod__header .header-top .left .amt'], false);
-      setDomBySelector([this.videoBoxPercent], ['.multi-page-v1 .cur-list .clickitem .duration', '.video-pod__list.multip .simple-base-item .duration'], false);
-      setDomBySelector([this.videoSelectMenu], ['.bpx-player-ctrl-eplist-menu', '.bpx-player-ctrl-eplist-episodes-content'], false);
+      videoDurationEle = [];
+      setDomBySelector([this.pVideoBoxPercent], ['.multi-page-v1 .cur-list .clickitem .duration', '.video-pod__list.multip .simple-base-item .duration'], false);
+      setDomBySelector([this.pVideoSelectPercent], ['.bpx-player-ctrl-eplist-menu', '.bpx-player-ctrl-eplist-episodes-content'], false);
     }, 300);
     const setVideoReverse = debounce(() => {
       setDomBySelector([this.videoListReverse], ['.multi-page-v1 .cur-list .list-box', '.video-sections-content-list .video-section-list', '.video-pod .video-pod__body .video-pod__list']);
@@ -370,12 +383,14 @@ const biliHelper = {
         ['bili-comments #feed bili-comment-thread-renderer bili-comment-renderer bili-rich-text p a', 'bili-comments #feed bili-comment-thread-renderer bili-comment-replies-renderer bili-comment-reply-renderer bili-rich-text p a']
       );
     }, 1000);
+
     const callback = mutationsList => {
       for (const mutation of mutationsList) {
         // viedo
         if (mutation.target.className
           && typeof mutation.target.className.includes !== 'undefined'
           && (mutation.target.className === 'list-box' || mutation.target.className === 'bpx-player-ctrl-eplist-menu-wrap' || mutation.target.className === 'video-pod__list multip list' || mutation.target.className === 'video-episode-card')) {
+          m('showVideoOrder') && showVideoOrder();
           m('showVidoPercent') && showVideoPercent();
           m('enableVideoReverse') && setVideoReverse();
         }

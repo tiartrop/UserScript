@@ -29,8 +29,8 @@ $borderColor: #f9f9f9;
 }
 
 // 播放器底部选集
-.bpx-player-ctrl-eplist-menu-item:has(span),
-.bpx-player-ctrl-eplist-multi-menu-item:has(span.video-percent) {
+.bpx-player-ctrl-eplist-menu-item:has(+span),
+.bpx-player-ctrl-eplist-multi-menu-item:has(+span.video-percent) {
   padding-right: 5em !important;
 }
 

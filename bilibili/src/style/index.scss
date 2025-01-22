@@ -205,6 +205,15 @@ div[class^='SectionSelector_selectorDropdown' i],
   }
 }
 
+// 选集
+.video-pod__list .simple-base-item:hover {
+  background: var(--bg1);
+
+  .title {
+    color: inherit;
+  }
+}
+
 // 分P选集
 #multi_page {
   form.cur-page {
@@ -330,7 +339,7 @@ div[class^='SectionSelector_selectorDropdown' i],
     height: 22px;
     line-height: 22px;
     font-size: 12px;
-    background: unset;
+    background: inherit;
     border: 1px solid #e5e9ef;
     border-radius: 20px;
     vertical-align: middle;
