@@ -366,15 +366,15 @@ const biliHelper = {
 
     const showVideoOrder = debounce(() => {
       setDomBySelector([this.pVideoOrder], ['.video-pod__list.multip', '.bpx-player-ctrl-eplist-episodes-content'], false);
-    }, 300);
+    }, 100);
     const showVideoPercent = debounce(() => {
       videoDurationEle = [];
       setDomBySelector([this.pVideoBoxPercent], ['.multi-page-v1 .cur-list .clickitem .duration', '.video-pod__list.multip .simple-base-item .duration'], false);
       setDomBySelector([this.pVideoSelectPercent], ['.bpx-player-ctrl-eplist-menu', '.bpx-player-ctrl-eplist-episodes-content'], false);
-    }, 300);
+    }, 100);
     const setVideoReverse = debounce(() => {
       setDomBySelector([this.videoListReverse], ['.multi-page-v1 .cur-list .list-box', '.video-sections-content-list .video-section-list', '.video-pod .video-pod__body .video-pod__list']);
-    }, 300);
+    }, 100);
 
     // comment-lit框架
     m('disableKeywordSearch') && (unsafeWindow.__INITIAL_STATE__?.isModern || document.querySelector('#__next') || location.href.match(/t.bilibili.com/) || location.href.match(/bilibili.com\/opus\/[0-9]+/)) && setInterval(() => {
@@ -410,7 +410,7 @@ const biliHelper = {
 
         // comment
         m('foldComment') && setDomBySelector([this.commentAddFoldButton], ['.bili-comment-container .bili-comment', '.dynamic-card-comment .bb-comment']);
-        m('foldComment') && setShadowDomBySelector([this.commentAddFoldButton], ['bili-comments']);
+        m('foldComment') && setShadowDomBySelector([this.commentAddFoldButton], ['.bili-dyn-comment bili-comments']);
         // comment-pc-vue.next.js
         m('disableKeywordSearch') && setDomBySelector([this.commentRemoveKeywordVue], ['.browser-pc .reply-item .reply-content', '.browser-pc .sub-reply-item .reply-content']);
         // new-comment.min.js

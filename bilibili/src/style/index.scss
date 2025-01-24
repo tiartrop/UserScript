@@ -152,6 +152,7 @@ div[class^='SectionSelector_selectorDropdown' i],
 
 #sections-vm .right-container {
   min-height: unset;
+  margin-top: 0 !important;
 
   .room-info-cntr {
     height: unset;
@@ -427,6 +428,7 @@ div[class^='SectionSelector_selectorDropdown' i],
 
   .chat-history-panel.new {
     height: calc(100% - 18px - 145px);
+    position: static !important;
 
     .a-move-in-top {
       display: none;
