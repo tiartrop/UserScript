@@ -114,9 +114,11 @@ const biliHelper = {
       headEleHeight = ele.parentElement.querySelector('.video-pod__header').offsetHeight + 8;
       if (ele.parentElement.querySelector('.video-pod__slide'))
         headEleHeight += ele.parentElement.querySelector('.video-pod__slide').offsetHeight;
-    }
+    } else if (ele.classList.contains('action-list'))
+      headEleHeight = ele.parentElement.parentElement.previousElementSibling.offsetHeight + 21;
+
     // 旧
-    else headEleHeight = ele.previousElementSibling.offsetHeight;
+    else  headEleHeight = ele.previousElementSibling.offsetHeight;
 
     ele.style.maxHeight = `calc(${calVideoPageSize().videoHeight}px - 62px - ${headEleHeight}px)`;
   },
@@ -337,9 +339,9 @@ const biliHelper = {
   },
   init() {
     const changePlayViewSize = debounce(async () => {
-      if (!location.href.match(/bilibili.com\/video/)) return;
+      if (!location.href.match(/bilibili.com\/video/) && !location.href.match(/bilibili.com\/list/)) return;
       await mscststs.wait('#bilibili-player', false, 10);
-      setDomBySelector([(ele) => (ele.style.width = `${calVideoPageSize().leftContainerWidth}px`)], ['.left-container'], false);
+      setDomBySelector([(ele) => (ele.style.width = `${calVideoPageSize().leftContainerWidth}px`)], ['.left-container', '.playlist-container--left'], false);
       setDomBySelector([(ele) => (ele.style.height = `${calVideoPageSize().videoHeight}px`)], ['#playerWrap'], false);
       setDomBySelector([(ele) => {
         ele.style.width = `${calVideoPageSize().videoWidth}px`;
@@ -354,9 +356,9 @@ const biliHelper = {
     }
 
     const changePlayListHeight = debounce(async () => {
-      if (!location.href.match(/bilibili.com\/video/)) return;
+      if (!location.href.match(/bilibili.com\/video/) && !location.href.match(/bilibili.com\/list/)) return;
       await mscststs.wait('#bilibili-player', false, 10);
-      setDomBySelector([this.setPlayListHeight], ['.multi-page-v1 .cur-list', '.video-sections-content-list', '.video-pod .video-pod__body'], false);
+      setDomBySelector([this.setPlayListHeight], ['.multi-page-v1 .cur-list', '.video-sections-content-list', '.video-pod .video-pod__body', '#playlist-video-action-list'], false);
     }, 100);
     changePlayListHeight();
     window.addEventListener('resize', changePlayListHeight);

@@ -248,6 +248,21 @@ div[class^='SectionSelector_selectorDropdown' i],
   }
 }
 
+#playlist-video-action-list-body {
+  max-height: unset !important;
+}
+
+.action-list-container .action-list-body {
+  .action-list-body-top {
+    display: none !important;
+  }
+
+  .split-line {
+    margin: 0 0 14px !important;
+  }
+}
+
+
 // 投稿人
 .upinfo-btn-panel .follow-btn {
   max-width: unset !important;
@@ -274,25 +289,28 @@ div[class^='SectionSelector_selectorDropdown' i],
 #playerWrap #bilibili-player-placeholder {
   -webkit-box-shadow: none;
   box-shadow: none;
+
+  .bpx-player-video-wrap {
+    background: var(--bg1);
+  }
 }
 
 #bilibili-player.mode-webscreen {
   width: 100% !important;
   height: 100% !important;
+  z-index: 2000;
 }
 
-#mirror-vdcon.video-container-v1 .right-container {
+#mirror-vdcon.video-container-v1 .right-container,
+#mirror-vdcon.playlist-container .playlist-container--right {
   width: 390px;
 }
 
 @media (min-width: 1681px) {
-  #mirror-vdcon.video-container-v1 .right-container {
+  #mirror-vdcon.video-container-v1 .right-container,
+  #mirror-vdcon.playlist-container .playlist-container--right {
     width: 451px;
   }
-}
-
-#bilibili-player.mode-webscreen {
-  z-index: 2000;
 }
 
 // 视频工具栏
