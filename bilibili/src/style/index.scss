@@ -15,7 +15,8 @@
 .download-client-trigger span,
 .loc-moveclip,
 #sections-vm .flip-view,
-#sections-vm .room-info-ctnr {
+#sections-vm .room-info-ctnr,
+#ogvPageCashierBox {
   display: none !important;
 }
 
@@ -394,6 +395,11 @@ div[class^='SectionSelector_selectorDropdown' i],
   display: none;
 }
 
+// 直播评价
+#businessContainerElement .research-container {
+  display: none;
+}
+
 // 头衔装扮
 .chat-history-list .chat-item.danmaku-item .title-label {
   display: none;
@@ -413,7 +419,7 @@ div[class^='SectionSelector_selectorDropdown' i],
     #rank-list-ctnr-box {
       height: 18px !important;
       border-bottom: unset;
-      background: rgba(255, 255, 255, .7);
+      background: rgba(255, 255, 255, .8);
 
       div {
         display: none;
@@ -423,7 +429,7 @@ div[class^='SectionSelector_selectorDropdown' i],
 
   .chat-history-panel,
   #chat-control-panel-vm {
-    background: rgba(255, 255, 255, .7);
+    background: rgba(255, 255, 255, .8);
   }
 
   .chat-history-panel.new {

@@ -1,4 +1,3 @@
-// 参考 https://greasyfork.org/scripts
 import trackUrlParams from '@/assets/trackParams';
 
 const removeTracking = (url) => {
