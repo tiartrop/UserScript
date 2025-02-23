@@ -101,7 +101,7 @@
 // 直播粉丝
 .gift-rank-cntr .list-cntr .list-body .list,
 // bangumi
-div[class^='SectionSelector_selectorDropdown' i],
+div[class^='SectionSelector_selectorDropdown'],
 #eplist_module div:last-child {
   &::-webkit-scrollbar {
     width: 14px !important;
@@ -286,11 +286,13 @@ div[class^='SectionSelector_selectorDropdown' i],
   background-color: rgba(0, 0, 0, 0.15);
 }
 
-#playerWrap #bilibili-player-placeholder {
-  -webkit-box-shadow: none;
-  box-shadow: none;
+#playerWrap {
+  #bilibili-player-placeholder {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+  }
 
-  .bpx-player-video-wrap {
+  #bilibili-player .bpx-player-container[data-screen*="wide"] .bpx-player-video-wrap {
     background: var(--bg1);
   }
 }
