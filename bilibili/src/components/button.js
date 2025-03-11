@@ -11,7 +11,7 @@ const Button = new class {
 
   // 视频倍速菜单
   playRateMenu = (ele) => {
-    const rateArr = ['0.5', '0.75', '1.0', '1.25', '1.5', '2.0'];
+    const rateArr = ['0.75', '1.0', '1.25', '1.5', '1.75', '2.0'];
     const curPlayRate = document.querySelector('video').playbackRate;
 
     return rateArr.map((r) => {

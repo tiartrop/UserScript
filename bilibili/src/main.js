@@ -111,6 +111,9 @@ const biliHelper = {
 
         if (child.firstElementChild.className === 'bpx-player-ctrl-eplist-multi-menu-item-text' && !child.firstElementChild.childElementCount)
           child.firstElementChild.innerHTML = `<span>P${index + 1} ${child.firstElementChild.textContent}</span>`;
+
+        if (child.firstElementChild.className === 'bpx-common-svg-icon' && child.firstElementChild.nextElementSibling.className === 'bpx-player-ctrl-eplist-multi-menu-item-text' && !child.firstElementChild.nextElementSibling.childElementCount)
+          child.firstElementChild.nextElementSibling.innerHTML = `<span>P${index + 1} ${child.firstElementChild.nextElementSibling.textContent}</span>`;
       }
       );
     }

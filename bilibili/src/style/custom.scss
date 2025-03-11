@@ -34,8 +34,7 @@ $borderColor: #f9f9f9;
   padding-right: 5em !important;
 }
 
-.bpx-player-ctrl-eplist-menu-item span,
-.bpx-player-ctrl-eplist-multi-menu-item span.video-percent {
+.bpx-player-ctrl-eplist-menu-item span {
   position: absolute;
   top: 0;
   right: 14px;
@@ -126,7 +125,7 @@ $borderColor: #f9f9f9;
   user-select: none;
 }
 
-.setting-panel-wrapper *{
+.setting-panel-wrapper * {
   box-sizing: content-box;
 }
 
