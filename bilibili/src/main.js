@@ -172,14 +172,8 @@ const biliHelper = {
   // 动态屏蔽广告
   dynamicBlockAds(ele) {
     if (adsKeywords.some(keyword => ele.textContent.includes(keyword)) || ele.innerHTML.includes('data-type="goods"')) {
-      let parentEle = ele.parentElement;
-      while (parentEle) {
-        if (parentEle.classList.contains('bili-dyn-list__item')) {
-          parentEle.style.display = 'none';
-          break;
-        }
-        parentEle = parentEle.parentElement;
-      }
+      const parentEle = ele.closest('.bili-dyn-list__item');
+      if (parentEle) parentEle.style.display = 'none';
     }
   },
   // 动态评论区右下添加收起按钮
