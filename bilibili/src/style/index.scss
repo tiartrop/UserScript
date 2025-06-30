@@ -438,6 +438,15 @@ div[class^='SectionSelector_selectorDropdown'],
   display: none;
 }
 
+// sc气泡
+#chat-msg-bubble-vm {
+  display: none;
+}
+// gift气泡
+chat-gift-bubble-vm {
+  display: none;
+}
+
 #aside-area-vm {
 
   .rank-list-section {
