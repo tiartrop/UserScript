@@ -33,13 +33,24 @@ const Button = new class {
   };
 
   // 评论收起按钮
-  fold = (ele) => {
-    const button = document.createElement('button');
-    button.innerHTML = '收起评论';
-    button.className = 'comment-fold-button';
-    button.addEventListener('click', () => ele.click(), false);
+  fold = (ele, link) => {
+    const buttonGroup = document.createElement('div');
+    buttonGroup.className = 'comment-fold-button';
 
-    return button;
+    if (link) {
+      const linkButton = document.createElement('button');
+      linkButton.className = 'bp-icon-font icon-link';
+      linkButton.setAttribute('style', 'margin-right: 10px;');
+      linkButton.addEventListener('click', () => link.click(), false);
+      buttonGroup.appendChild(linkButton);
+    }
+
+    const foldButton = document.createElement('button');
+    foldButton.innerHTML = '收起评论';
+    foldButton.addEventListener('click', () => ele.click(), false);
+    buttonGroup.appendChild(foldButton);
+
+    return buttonGroup;
   };
 
   // 联合投稿折叠收起按钮

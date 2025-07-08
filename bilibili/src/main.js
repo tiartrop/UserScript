@@ -6,7 +6,7 @@ import { mscststs } from '@/utils/domWatcher';
 import cleanHistory from '@/utils/history';
 import { default as b } from './components/button';
 import { containerElement, menu_value as m } from './components/controlPanel';
-import adsKeywords from '@/assets/adsKeywords';
+import { default as oriAdsKeywords } from '@/assets/adsKeywords';
 import globalCSS from '@/style/index.scss';
 
 // 覆盖CSS
@@ -171,6 +171,8 @@ const biliHelper = {
   },
   // 动态屏蔽广告
   dynamicBlockAds(ele) {
+    const { adsKeywords } = GM_getValue('mySettings', { adsKeywords: oriAdsKeywords });
+    console.log(adsKeywords)
     if (adsKeywords.some(keyword => ele.textContent.includes(keyword)) || ele.innerHTML.includes('data-type="goods"')) {
       const parentEle = ele.closest('.bili-dyn-list__item');
       if (parentEle) parentEle.style.display = 'none';
@@ -182,21 +184,34 @@ const biliHelper = {
     if (location.href.match(/t.bilibili.com\/[0-9]+/) || location.href.match(/bilibili.com\/opus\/[0-9]+/)) return;
     const parentEle = ele.host ? ele.host.parentElement : ele.parentElement;
     const commentToggleEle = parentEle.parentElement.previousElementSibling.lastElementChild.children[1].firstElementChild;
+
     // 无评论则返回
     if (!Number(commentToggleEle.innerText)) return;
-    const foldButton = b.fold(commentToggleEle);
 
-    if (ele.querySelector('.comment-container')) ele.querySelector('.reply-list').appendChild(foldButton);
-    if (ele.querySelector('.bottom-page')) {
-      foldButton.setAttribute('style', 'margin-bottom: 20px;');
-      ele.appendChild(foldButton);
+    if (ele.querySelector('.comment-container')) {
+      setTimeout(() => {
+        const foldButton = b.fold(commentToggleEle, ele.querySelector('.reply-list .view-all-reply'));
+        ele.querySelector('.reply-list').appendChild(foldButton);
+      }, Number(commentToggleEle.innerText) > 10 ? 1000 : 0);
     }
+    // 旧版框架
+    if (ele.querySelector('.bottom-page')) {
+      setTimeout(() => {
+        const foldButton = b.fold(commentToggleEle, ele.querySelector('.bottom-page .more-link'));
+        foldButton.setAttribute('style', 'margin-bottom: 20px;');
+        ele.appendChild(foldButton);
+      }, Number(commentToggleEle.innerText) > 10 ? 1000 : 0);
+    }
+    // comment-lit框架
     if (ele.host) {
       const style = document.createElement('style');
       style.innerHTML = '#end.limit .bottombar { padding-bottom: 0 !important; }';
       ele.appendChild(style);
-      foldButton.setAttribute('style', 'margin-bottom: 20px;');
-      parentEle.appendChild(foldButton);
+      setTimeout(() => {
+        const foldButton = b.fold(commentToggleEle, ele.querySelector('#end.limit .bottombar.clickable'));
+        foldButton.setAttribute('style', 'margin-bottom: 20px;');
+        parentEle.appendChild(foldButton);
+      }, Number(commentToggleEle.innerText) > 10 ? 1500 : 0);
     }
   },
   // 评论区移除关键词搜索
@@ -300,8 +315,8 @@ const biliHelper = {
         ['bili-comments #feed bili-comment-thread-renderer bili-comment-renderer bili-rich-text p a', 'bili-comments #feed bili-comment-thread-renderer bili-comment-replies-renderer bili-comment-reply-renderer bili-rich-text p a']
       );
       setShadowDomBySelector(
-        [(ele) => (ele.style.display = "none")],
-        ['bili-comments #feed bili-comment-thread-renderer bili-comment-renderer bili-comment-user-sailing-card #card']
+        [(ele) => (ele.style.display = 'none')],
+        ['bili-comments #feed bili-comment-thread-renderer bili-comment-renderer bili-comment-user-sailing-card #card', 'bili-comments bili-comments-header-renderer bili-comments-notice #bar']
       );
     }, 1000);
 
@@ -406,7 +421,7 @@ if (m('disableDanmukuAiBlock')) {
 }
 
 async function StartObservePage() {
-  await mscststs.wait('#app', false, 5) || await mscststs.wait('#__next', false, 5);
+  await mscststs.wait('#app', false, 10) || await mscststs.wait('#__next', false, 10);
   const observer = new MutationObserver(biliHelper.init());
   observer.observe(document.body, config);
 

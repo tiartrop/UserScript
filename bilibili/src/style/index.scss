@@ -576,8 +576,19 @@ html[lab-style*="dark"] .player-full-win #aside-area-vm {
   动态页简化
 */
 
-#app .content {
+#app>.content {
   min-width: 900px;
+}
+
+#app {
+
+  .opus-detail {
+    min-width: 900px;
+
+    .right-sidebar-wrap {
+      margin-left: 940px;
+    }
+  }
 }
 
 .bili-dyn-content__forw__desc {

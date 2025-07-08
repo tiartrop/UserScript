@@ -66,7 +66,7 @@ export function debounce(func, wait) {
  * @param clickEle 选中元素
  * @param moveEle 移动元素
  * @param parentEle 父元素
- * @returns {(function(): void)|*}
+ * @returns
  */
 export function drag(clickEle, moveEle, parentEle = document.body) {
   if (!clickEle) return;
@@ -147,4 +147,26 @@ export function drag(clickEle, moveEle, parentEle = document.body) {
     return false;
   };
 
+}
+
+/**
+ * 下载
+ * @param blob
+ * @param filename
+ * @returns
+ */
+export async function download(blob, filename, time = 10e3) {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.download = filename;
+  link.href = url;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  const revoke = function () {
+    URL.revokeObjectURL(url);
+    window.removeEventListener('unload', revoke);
+  };
+  setTimeout(revoke, time);
+  window.addEventListener('unload', revoke);
 }
