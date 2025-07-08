@@ -442,8 +442,9 @@ div[class^='SectionSelector_selectorDropdown'],
 #chat-msg-bubble-vm {
   display: none;
 }
+
 // gift气泡
-chat-gift-bubble-vm {
+#chat-gift-bubble-vm {
   display: none;
 }
 
@@ -574,6 +575,10 @@ html[lab-style*="dark"] .player-full-win #aside-area-vm {
 /*
   动态页简化
 */
+
+#app .content {
+  min-width: 900px;
+}
 
 .bili-dyn-content__forw__desc {
   cursor: auto;

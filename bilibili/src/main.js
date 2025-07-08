@@ -299,6 +299,10 @@ const biliHelper = {
         [this.commentRemoveKeywordLit],
         ['bili-comments #feed bili-comment-thread-renderer bili-comment-renderer bili-rich-text p a', 'bili-comments #feed bili-comment-thread-renderer bili-comment-replies-renderer bili-comment-reply-renderer bili-rich-text p a']
       );
+      setShadowDomBySelector(
+        [(ele) => (ele.style.display = "none")],
+        ['bili-comments #feed bili-comment-thread-renderer bili-comment-renderer bili-comment-user-sailing-card #card']
+      );
     }, 1000);
 
     const callback = mutationsList => {
@@ -350,19 +354,32 @@ m('closeRecommendAutoPlay') && storageLocal.setItem('recommend_auto_play', 'clos
 // 默认关闭小窗播放
 m('closeMinPlayWindow') && storageLocal.setItem('b_miniplayer', '0');
 
-// __INITIAL_STATE__
+// __INITIAL_STATE__ 只在首次赋值时拦截和处理
+let initialSet = false;
 let rawState;
 Object.defineProperty(unsafeWindow, '__INITIAL_STATE__', {
+  configurable: true,
   get() {
     return rawState;
   },
   set(value) {
-    // 退回new-comment.min.js版评论区（笔记功能不全且预计未来失效）
-    if (m('rollbackCommentVer')) value.isModern = false;
-    // 退回comment-pc-vue.next.js版评论区（已失效）
-    // value.abtest.comment_next_version = '';
-    // 关闭Ai视频总结功能
-    if (m('closeAiSummary') && value.abtest) value.abtest.ai_summary_version = '';
+    // 只拦截第一次赋值
+    if (!initialSet) {
+      // 退回new-comment.min.js版评论区（笔记功能不全且预计未来失效）
+      if (m('rollbackCommentVer')) value.isModern = false;
+      // 退回comment-pc-vue.next.js版评论区（已失效）
+      // value.abtest.comment_next_version = '';
+      // 关闭Ai视频总结功能
+      if (m('closeAiSummary') && value.abtest) value.abtest.ai_summary_version = '';
+      initialSet = true;
+      // 解除劫持，恢复正常属性
+      Object.defineProperty(unsafeWindow, '__INITIAL_STATE__', {
+        configurable: true,
+        writable: true,
+        enumerable: true,
+        value
+      });
+    }
     rawState = value;
   }
 });

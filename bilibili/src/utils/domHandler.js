@@ -1,5 +1,5 @@
 export const setDomBySelector = (nodeHandlers, selectorList, disposable = true) => {
-  const selected = selectorList.reduce((acc, selector) => [...acc, ...document.querySelectorAll(selector)], []);
+  const selected = document.querySelectorAll(selectorList.join(','));
 
   selected.forEach((node) => {
     if (node.settled && disposable) return;
