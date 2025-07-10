@@ -21,8 +21,10 @@ let videoDurationEle = [];
 const biliHelper = {
   // 根据联合投稿的溢出宽度添加按钮
   setUpPanelContainer(ele) {
-    if (ele.scrollHeight > ele.offsetHeight || ele.scrollWidth > ele.offsetWidth)
-      setTimeout(() => ele.parentElement.appendChild(b.expand(ele)), 1000);
+    if (ele.scrollHeight > ele.offsetHeight || ele.scrollWidth > ele.offsetWidth) {
+      if (ele.nextElementSibling) ele.nextElementSibling.remove();
+      setTimeout(() => ele.parentElement.appendChild(b.expand(ele)), 500);
+    }
   },
   // 根据视频高度修改右侧列表最大高度
   setPlayListHeight(ele) {
@@ -162,8 +164,7 @@ const biliHelper = {
     if (ele.classList.contains('folded')) {
       ele.style.display = 'unset';
       ele.style.lineClamp = 'unset';
-      if (ele.nextElementSibling)
-        ele.nextElementSibling.remove();
+      if (ele.nextElementSibling) ele.nextElementSibling.remove();
       // 去掉多余的空行
       if (ele.lastElementChild.tagName.toLowerCase() === 'span' && !ele.lastElementChild.classList.contains('bili-rich-text-link'))
         ele.lastElementChild.innerHTML = ele.lastElementChild.innerHTML.trim();
@@ -172,7 +173,6 @@ const biliHelper = {
   // 动态屏蔽广告
   dynamicBlockAds(ele) {
     const { adsKeywords } = GM_getValue('mySettings', { adsKeywords: oriAdsKeywords });
-    console.log(adsKeywords)
     if (adsKeywords.some(keyword => ele.textContent.includes(keyword)) || ele.innerHTML.includes('data-type="goods"')) {
       const parentEle = ele.closest('.bili-dyn-list__item');
       if (parentEle) parentEle.style.display = 'none';
@@ -241,8 +241,7 @@ const biliHelper = {
   // 评论区移除关键词搜索
   commentRemoveKeywordOld(ele) {
     if (ele.href.match(/search.bilibili.com/)) {
-      if (ele.nextElementSibling && ele.nextElementSibling.tagName.toLowerCase() === 'i')
-        ele.nextElementSibling.remove();
+      if (ele.nextElementSibling && ele.nextElementSibling.tagName.toLowerCase() === 'i') ele.nextElementSibling.remove();
       const newEle = document.createElement('span');
       newEle.innerHTML = ele.textContent;
       ele.replaceWith(newEle);
@@ -270,7 +269,7 @@ const biliHelper = {
   init() {
     const changePlayViewSize = debounce(async () => {
       if (!location.href.match(/bilibili.com\/video/) && !location.href.match(/bilibili.com\/list/)) return;
-      await mscststs.wait('#bilibili-player', false, 10);
+      await mscststs.wait('#bilibili-player');
       setDomBySelector([(ele) => (ele.style.width = `${calVideoPageSize().leftContainerWidth}px`)], ['.left-container', '.playlist-container--left'], false);
       setDomBySelector([(ele) => (ele.style.height = `${calVideoPageSize().videoHeight}px`)], ['#playerWrap'], false);
       setDomBySelector([(ele) => {
@@ -287,12 +286,18 @@ const biliHelper = {
 
     const changePlayListHeight = debounce(async () => {
       if (!location.href.match(/bilibili.com\/video/) && !location.href.match(/bilibili.com\/list/)) return;
-      await mscststs.wait('#bilibili-player', false, 10);
+      await mscststs.wait('#bilibili-player');
       setDomBySelector([this.setPlayListHeight], ['.multi-page-v1 .cur-list', '.video-sections-content-list', '.video-pod .video-pod__body', '#playlist-video-action-list'], false);
     }, 100);
     changePlayListHeight();
     window.addEventListener('resize', changePlayListHeight);
     window.addEventListener('popstate', changePlayListHeight);
+
+    const changeVideoStaffHeight = debounce(() => {
+      if (unsafeWindow.__INITIAL_STATE__ && unsafeWindow.__INITIAL_STATE__.videoData.staff)
+        setDomBySelector([this.setUpPanelContainer], ['.up-panel-container .membersinfo-normal .container:not(.init-no-wrap)'], false);
+
+    }, 100);
 
     if (unsafeWindow.__INITIAL_STATE__ && unsafeWindow.__INITIAL_STATE__.videoData) videoLength = unsafeWindow.__INITIAL_STATE__.videoData.videos;
 
@@ -331,7 +336,12 @@ const biliHelper = {
           m('enableVideoReverse') && setVideoReverse();
         }
 
-        setDomBySelector([this.setUpPanelContainer], ['.up-panel-container .membersinfo-normal .container']);
+        if (mutation.target.className
+          && typeof mutation.target.className.includes !== 'undefined'
+          && (mutation.target.className === 'staff-name'))
+          changeVideoStaffHeight();
+
+
         setDomBySelector([(ele) => ele.addEventListener('click', changePlayViewSize)], ['.bpx-player-ctrl-wide']);
         m('enableVideoPlayRate') && setDomBySelector([this.videoPlayRateMenu], ['.bpx-player-contextmenu.bpx-player-active li']);
 
@@ -421,7 +431,7 @@ if (m('disableDanmukuAiBlock')) {
 }
 
 async function StartObservePage() {
-  await mscststs.wait('#app', false, 10) || await mscststs.wait('#__next', false, 10);
+  await mscststs.wait('#app') || await mscststs.wait('#__next');
   const observer = new MutationObserver(biliHelper.init());
   observer.observe(document.body, config);
 

@@ -61,10 +61,10 @@ const Button = new class {
     button.addEventListener('click', () => {
       if (unsafeWindow.getComputedStyle(ele).getPropertyValue('max-height') === '86px') {
         button.style.transform = 'rotate(-135deg)';
-        ele.style.maxHeight = 'unset';
+        ele.setAttribute('style', 'max-height: unset !important');
       } else {
         button.style.transform = 'rotate(45deg)';
-        ele.style.maxHeight = '86px';
+        ele.setAttribute('style', 'max-height: 86px !important');
       }
     }, false);
 
