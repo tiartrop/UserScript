@@ -359,7 +359,7 @@ div[class^='SectionSelector_selectorDropdown'],
 
 // 视频tag
 .video-tag-container .tag-panel .tag {
-  display: inline-block;
+  display: inline-block !important;
   margin: 0 10px 8px 0 !important;
   float: none !important;
 
