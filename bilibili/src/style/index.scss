@@ -1,4 +1,4 @@
-@import './custom.scss';
+@use './custom.scss' as *;
 
 // 隐藏广告及推广
 #slide_ad,

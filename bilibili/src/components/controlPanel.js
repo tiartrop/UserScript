@@ -1,35 +1,39 @@
 import { default as oriAdsKeywords } from '@/assets/adsKeywords';
+import defaultSettings from '@/assets/defaultSettings';
 import { download, drag } from '@/utils/commonUtils';
 
+const mySettings = 'mySettings';
+GM_getValue(mySettings, { ...defaultSettings, adsKeywords: oriAdsKeywords });
+
 const menus = [
-  ['视频', 'widerVideoPanelFit', '加宽视频布局', GM_getValue('widerVideoPanelFit', true)],
-  ['视频', 'enableVideoPlayRate', '右键小窗倍速', GM_getValue('enableVideoPlayRate', true)],
-  ['视频', 'enableVideoReverse', '播放列表倒序', GM_getValue('enableVideoReverse', true)],
-  ['视频', 'showVideoOrder', '显示分P序号', GM_getValue('showVideoOrder', true)],
-  ['视频', 'showVidoPercent', '显示分P百分比时长', GM_getValue('showVidoPercent', true)],
-  ['动态', 'stopDynamicJump', '动态禁止点击跳转', GM_getValue('stopDynamicJump', true)],
-  ['动态', 'expandDynamic', '动态自动展开文本', GM_getValue('expandDynamic', true)],
-  ['动态', 'blockDynamicAds', '动态屏蔽广告', GM_getValue('blockDynamicAds', true)],
-  ['评论', 'foldComment', '快速收起评论', GM_getValue('foldComment', true)],
-  ['评论', 'disableKeywordSearch', '移除蓝色搜索词', GM_getValue('disableKeywordSearch', true)],
-  ['界面', 'cleanUrlTrack', '清除地址栏追踪参数', GM_getValue('cleanUrlTrack', true)],
-  ['视频', 'closeRecommendAutoPlay', '默认关闭自动连播', GM_getValue('closeRecommendAutoPlay', true)],
-  ['视频', 'closeMinPlayWindow', '默认关闭小窗播放', GM_getValue('closeMinPlayWindow', false)],
-  ['实验室', 'rollbackCommentVer', '退回旧版评论区', GM_getValue('rollbackCommentVer', false)],
-  ['实验室', 'closeAiSummary', '关闭AI视频总结功能', GM_getValue('closeAiSummary', false)],
-  ['实验室', 'disableDanmukuAiBlock', '禁用弹幕智能云屏蔽', GM_getValue('disableDanmukuAiBlock', true)]
+  ['视频', 'widerVideoPanelFit', '加宽视频布局'],
+  ['视频', 'enableVideoPlayRate', '右键小窗倍速'],
+  ['视频', 'enableVideoReverse', '播放列表倒序'],
+  ['视频', 'showVideoOrder', '显示分P序号'],
+  ['视频', 'showVidoPercent', '显示分P百分比时长'],
+  ['动态', 'stopDynamicJump', '动态禁止点击跳转'],
+  ['动态', 'expandDynamic', '动态自动展开文本'],
+  ['动态', 'blockDynamicAds', '动态屏蔽广告'],
+  ['评论', 'foldComment', '快速收起评论'],
+  ['评论', 'disableKeywordSearch', '移除蓝色搜索词'],
+  ['界面', 'cleanUrlTrack', '清除地址栏追踪参数'],
+  ['视频', 'closeRecommendAutoPlay', '默认关闭自动连播'],
+  ['视频', 'closeMinPlayWindow', '默认关闭小窗播放'],
+  ['实验室', 'rollbackCommentVer', '退回旧版评论区'],
+  ['实验室', 'closeAiSummary', '关闭AI视频总结功能'],
+  ['实验室', 'disableDanmukuAiBlock', '禁用弹幕智能云屏蔽']
 ];
 
 const menu_value = (key) => {
   for (const menu of menus)
-    if (menu[1] === key) return menu[3];
+    if (menu[1] === key) return GM_getValue(mySettings)[key];
 };
 
-const groupedMenus = menus.reduce((groups, [group, key, title, status]) => {
+const groupedMenus = menus.reduce((groups, [group, key, title]) => {
   if (!groups[group])
     groups[group] = []; // 如果该组不存在，创建一个新组
 
-  groups[group].push({ key, title, status });
+  groups[group].push({ key, title, status: GM_getValue(mySettings)[key] });
   return groups;
 }, {});
 
@@ -107,11 +111,11 @@ containerElement.querySelectorAll('.config-panel-option-item-switch').forEach(sw
   switchElement.onclick = function () {
     const { key, status } = this.dataset;
     this.dataset.status = status === 'off' ? 'on' : 'off';
-    GM_setValue(key, this.dataset.status === 'on');
+    const _mySettings = GM_getValue(mySettings);
+    _mySettings[key] = this.dataset.status === 'on';
+    GM_setValue(mySettings, _mySettings);
   };
 });
-
-GM_getValue('mySettings', { adsKeywords: oriAdsKeywords });
 
 // 导入
 containerElement.querySelector('.import-btn').onclick = () => {
@@ -130,7 +134,7 @@ containerElement.querySelector('.import-btn').onclick = () => {
     reader.onload = (e) => {
       try {
         const importedData = JSON.parse(e.target.result);
-        GM_setValue('mySettings', importedData);
+        GM_setValue(mySettings, importedData);
       } catch (error) {
       }
     };
@@ -145,7 +149,7 @@ containerElement.querySelector('.import-btn').onclick = () => {
 
 // 导出
 containerElement.querySelector('.export-btn').onclick = () => {
-  const dataToExport = GM_getValue('mySettings', { adsKeywords: oriAdsKeywords });
+  const dataToExport = GM_getValue(mySettings);
   const text = JSON.stringify(dataToExport, null, 2);
   const blob = new Blob([text], { type: 'application/json' });
   const date = new Date();
@@ -156,7 +160,7 @@ containerElement.querySelector('.export-btn').onclick = () => {
 
 // 重置
 containerElement.querySelector('.reset-btn').onclick = () => {
-  GM_setValue('mySettings', { adsKeywords: oriAdsKeywords });
+  GM_setValue(mySettings, { ...defaultSettings, adsKeywords: oriAdsKeywords });
 };
 
 containerElement.querySelector('#close-btn').onclick = () => containerElement.style.display = 'none';

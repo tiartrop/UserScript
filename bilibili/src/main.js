@@ -164,7 +164,7 @@ const biliHelper = {
     if (ele.classList.contains('folded')) {
       ele.style.display = 'unset';
       ele.style.lineClamp = 'unset';
-      if (ele.nextElementSibling) ele.nextElementSibling.remove();
+      if (ele.nextElementSibling && ele.nextElementSibling.innerText === '展开') ele.nextElementSibling.remove();
       // 去掉多余的空行
       if (ele.lastElementChild.tagName.toLowerCase() === 'span' && !ele.lastElementChild.classList.contains('bili-rich-text-link'))
         ele.lastElementChild.innerHTML = ele.lastElementChild.innerHTML.trim();
