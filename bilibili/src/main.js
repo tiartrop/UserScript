@@ -108,13 +108,13 @@ const biliHelper = {
   pVideoOrder(ele) {
     if (ele.children.length === videoLength) {
       [...ele.children].forEach((child, index) => {
-        if (child.firstElementChild.className === 'title' && !child.firstElementChild.lastElementChild.childElementCount)
+        if (child.firstElementChild.className === 'title' && !child.firstElementChild.title.match(/^[pP]\d/) && !child.firstElementChild.lastElementChild.childElementCount)
           child.firstElementChild.lastElementChild.innerHTML = `<span>P${index + 1} ${child.firstElementChild.textContent}</span>`;
 
-        if (child.firstElementChild.className === 'bpx-player-ctrl-eplist-multi-menu-item-text' && !child.firstElementChild.childElementCount)
+        if (child.firstElementChild.className === 'bpx-player-ctrl-eplist-multi-menu-item-text' && !child.firstElementChild.textContent.match(/^[pP]\d/) && !child.firstElementChild.childElementCount)
           child.firstElementChild.innerHTML = `<span>P${index + 1} ${child.firstElementChild.textContent}</span>`;
 
-        if (child.firstElementChild.className === 'bpx-common-svg-icon' && child.firstElementChild.nextElementSibling.className === 'bpx-player-ctrl-eplist-multi-menu-item-text' && !child.firstElementChild.nextElementSibling.childElementCount)
+        if (child.firstElementChild.className === 'bpx-common-svg-icon' && child.firstElementChild.nextElementSibling.className === 'bpx-player-ctrl-eplist-multi-menu-item-text' && !child.firstElementChild.nextElementSibling.textContent.match(/^[pP]\d/) && !child.firstElementChild.nextElementSibling.childElementCount)
           child.firstElementChild.nextElementSibling.innerHTML = `<span>P${index + 1} ${child.firstElementChild.nextElementSibling.textContent}</span>`;
       }
       );
@@ -291,7 +291,6 @@ const biliHelper = {
     }, 100);
     changePlayListHeight();
     window.addEventListener('resize', changePlayListHeight);
-    window.addEventListener('popstate', changePlayListHeight);
 
     const changeVideoStaffHeight = debounce(() => {
       if (unsafeWindow.__INITIAL_STATE__ && unsafeWindow.__INITIAL_STATE__.videoData.staff)
@@ -333,6 +332,7 @@ const biliHelper = {
           m('showVideoOrder') && showVideoOrder();
           m('showVidoPercent') && showVideoPercent();
           m('enableVideoReverse') && setVideoReverse();
+          changePlayListHeight();
         }
 
         if (mutation.target.className
