@@ -60,14 +60,23 @@ const biliHelper = {
   },
   // 视频播放倒序
   videoListReverse(ele) {
+    const eplistContent = document.querySelector('.bpx-player-ctrl-eplist-episodes-content') || document.querySelector('.bpx-player-ctrl-eplist-section-content');
+    let eplistContentItems = [];
+    if (eplistContent) eplistContentItems = eplistContent.querySelectorAll('.bpx-player-ctrl-eplist-multi-menu-item');
+
     const func = (event) => {
       event.stopImmediatePropagation();
       event.target.innerHTML = event.target.innerHTML === '↓☰' ? '↑☰' : '↓☰';
 
-      const arr = [...ele.children];
-      arr.reverse();
-      ele.innerHTML = '';
-      arr.forEach((child) => ele.appendChild(child));
+      function reverseItems(parentElement) {
+        const items = Array.from(parentElement.children);
+        parentElement.innerHTML = '';
+        items.reverse().forEach(item => parentElement.appendChild(item));
+      }
+
+      if (eplistContent) reverseItems(eplistContent);
+
+      reverseItems(ele);
     };
 
     const reverseButton = b.reserve(func);
@@ -95,12 +104,26 @@ const biliHelper = {
         reverseButton.style.color = '#9499a0';
         ele.parentElement.parentElement.querySelector('.header-bottom .left').appendChild(reverseButton);
 
-        document.querySelectorAll('.slide-item:not(.active)').forEach((item) => item.onclick = () => reverseButton.innerHTML = '↓☰');
+        document.querySelectorAll('.slide-item:not(.active)').forEach((item) => item.onclick = () => {
+          reverseButton.innerHTML = '↓☰';
+          eplistContent.innerHTML = '';
+          eplistContentItems.forEach(item => {
+            eplistContent.appendChild(item);
+          });
+        });
       }
       // 单组
       else {
-        ele.parentElement.previousElementSibling.lastElementChild.firstElementChild.appendChild(reverseButton);
-        if (document.querySelector('.video-pod__header .view-mode')) document.querySelector('.video-pod__header .view-mode').onclick = () => reverseButton.innerHTML = '↓☰';
+        document.querySelector('.video-pod .video-pod__header .header-bottom .left').appendChild(reverseButton);
+        if (document.querySelector('.video-pod__header .view-mode')) {
+          document.querySelector('.video-pod__header .view-mode').onclick = () => {
+            reverseButton.innerHTML = '↓☰';
+            eplistContent.innerHTML = '';
+            eplistContentItems.forEach(item => {
+              eplistContent.appendChild(item);
+            });
+          };
+        }
       }
     }
   },
