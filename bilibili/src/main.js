@@ -15,7 +15,7 @@ GM_addStyle(`${globalCSS}`);
 // 观察器的配置
 const config = { childList: true, subtree: true };
 
-let videoLength = 0;
+let videoCount = 0;
 let videoPercentArr = [];
 let videoDurationEle = [];
 const biliHelper = {
@@ -60,13 +60,32 @@ const biliHelper = {
   },
   // 视频播放倒序
   videoListReverse(ele) {
+    const oriVideoPrev = unsafeWindow.player.prev;
+    const oriVideoNext = unsafeWindow.player.next;
+    const playPrevButton = document.querySelector('.bpx-player-ctrl-btn.bpx-player-ctrl-prev');
+    const playNextButton = document.querySelector('.bpx-player-ctrl-btn.bpx-player-ctrl-next');
+    playPrevButton.addEventListener('click', (e) => {
+      e.stopImmediatePropagation();
+      unsafeWindow.player.prev();
+    }, true);
+    playNextButton.addEventListener('click', (e) => {
+      e.stopImmediatePropagation();
+      unsafeWindow.player.next();
+    }, true);
+
+    const video = document.querySelector('video');
+    video.addEventListener('timeupdate', onVideoNearlyEnded);
     const eplistContent = document.querySelector('.bpx-player-ctrl-eplist-episodes-content') || document.querySelector('.bpx-player-ctrl-eplist-section-content');
     let eplistContentItems = [];
-    if (eplistContent) eplistContentItems = eplistContent.querySelectorAll('.bpx-player-ctrl-eplist-multi-menu-item');
+    if (eplistContent) setTimeout(() => eplistContentItems = eplistContent.querySelectorAll('.bpx-player-ctrl-eplist-multi-menu-item'), 1000);
 
-    const func = (event) => {
+    const reverseButton = b.reserve((event) => {
       event.stopImmediatePropagation();
-      event.target.innerHTML = event.target.innerHTML === '↓☰' ? '↑☰' : '↓☰';
+      if (event.target.innerHTML === '↓☰') {
+        event.target.innerHTML = '↑☰';
+        unsafeWindow.player.next = oriVideoPrev;
+        unsafeWindow.player.prev = oriVideoNext;
+      } else reset();
 
       function reverseItems(parentElement) {
         const items = Array.from(parentElement.children);
@@ -77,9 +96,39 @@ const biliHelper = {
       if (eplistContent) reverseItems(eplistContent);
 
       reverseItems(ele);
-    };
+    });
 
-    const reverseButton = b.reserve(func);
+    function onVideoNearlyEnded() {
+      if ((document.querySelector('.continuous-btn .switch-btn.on') || video.__nearlyEnded) && reverseButton.innerHTML === '↑☰') {
+        const remaining = video.duration - video.currentTime;
+        if (remaining <= 1 && !video.__nearlyEnded) {
+          video.__nearlyEnded = true;
+          document.querySelector('.continuous-btn').click();
+        }
+        if (remaining <= 0.1 && !video.__almostEnded) {
+          video.__almostEnded = true;
+          unsafeWindow.player.goto(-1);
+          const ableAutoPlay = setInterval(() => {
+            if (document.querySelector('.continuous-btn .switch-btn.on')) {
+              video.__nearlyEnded = false;
+              video.__almostEnded = false;
+              clearInterval(ableAutoPlay);
+            }
+            else {
+              const offBtn = document.querySelector('.continuous-btn .switch-btn:not(.on)');
+              if (offBtn) offBtn.click();
+            }
+          }, 100);
+        }
+      }
+    }
+
+    function reset() {
+      reverseButton.innerHTML = '↓☰';
+      unsafeWindow.player.next = oriVideoNext;
+      unsafeWindow.player.prev = oriVideoPrev;
+    }
+
     // 旧-分P选集
     if (ele.parentElement.classList.contains('cur-list')) {
       reverseButton.style.color = '#757575';
@@ -105,7 +154,7 @@ const biliHelper = {
         ele.parentElement.parentElement.querySelector('.header-bottom .left').appendChild(reverseButton);
 
         document.querySelectorAll('.slide-item:not(.active)').forEach((item) => item.onclick = () => {
-          reverseButton.innerHTML = '↓☰';
+          reset();
           eplistContent.innerHTML = '';
           eplistContentItems.forEach(item => {
             eplistContent.appendChild(item);
@@ -114,10 +163,10 @@ const biliHelper = {
       }
       // 单组
       else {
-        document.querySelector('.video-pod .video-pod__header .header-bottom .left').appendChild(reverseButton);
+        document.querySelector('.video-pod .video-pod__header .left').appendChild(reverseButton);
         if (document.querySelector('.video-pod__header .view-mode')) {
           document.querySelector('.video-pod__header .view-mode').onclick = () => {
-            reverseButton.innerHTML = '↓☰';
+            reset();
             eplistContent.innerHTML = '';
             eplistContentItems.forEach(item => {
               eplistContent.appendChild(item);
@@ -129,7 +178,7 @@ const biliHelper = {
   },
   // 分P显示序号
   pVideoOrder(ele) {
-    if (ele.children.length === videoLength) {
+    if (ele.children.length === videoCount) {
       [...ele.children].forEach((child, index) => {
         if (child.firstElementChild.className === 'title' && !child.firstElementChild.title.match(/^[pP]\d/) && !child.firstElementChild.lastElementChild.childElementCount)
           child.firstElementChild.lastElementChild.innerHTML = `<span>P${index + 1} ${child.firstElementChild.textContent}</span>`;
@@ -146,7 +195,7 @@ const biliHelper = {
   // 分P显示时长百分比
   pVideoBoxPercent(ele) {
     videoDurationEle.push(ele);
-    if (videoDurationEle.length === videoLength) {
+    if (videoDurationEle.length === videoCount) {
       const lengthArr = videoDurationEle.map(ele => ele.firstElementChild ? ele.lastElementChild.innerHTML : ele.innerHTML);
       videoPercentArr = getVideoLengthPercent(lengthArr);
       videoDurationEle.forEach((child, index) => {
@@ -320,7 +369,7 @@ const biliHelper = {
         setDomBySelector([this.setUpPanelContainer], ['.up-panel-container .membersinfo-normal .container:not(.init-no-wrap)'], false);
     }, 100);
 
-    if (unsafeWindow.__INITIAL_STATE__ && unsafeWindow.__INITIAL_STATE__.videoData) videoLength = unsafeWindow.__INITIAL_STATE__.videoData.videos;
+    if (unsafeWindow.__INITIAL_STATE__ && unsafeWindow.__INITIAL_STATE__.videoData) videoCount = unsafeWindow.__INITIAL_STATE__.videoData.videos;
 
     const showVideoOrder = debounce(() => {
       setDomBySelector([this.pVideoOrder], ['.video-pod__list.multip', '.bpx-player-ctrl-eplist-episodes-content'], false);
@@ -396,7 +445,7 @@ const biliHelper = {
 m('cleanUrlTrack') && cleanHistory();
 
 // 默认关闭自动连播
-m('closeRecommendAutoPlay') && storageLocal.setItem('recommend_auto_play', 'close');
+m('closeRecommendAutoPlay') && setTimeout(() => storageLocal.setItem('recommend_auto_play', 'close'));
 
 // 默认关闭小窗播放
 m('closeMinPlayWindow') && storageLocal.setItem('b_miniplayer', '0');
