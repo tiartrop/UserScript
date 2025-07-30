@@ -62,16 +62,14 @@ const biliHelper = {
   videoListReverse(ele) {
     const oriVideoPrev = unsafeWindow.player.prev;
     const oriVideoNext = unsafeWindow.player.next;
-    const playPrevButton = document.querySelector('.bpx-player-ctrl-btn.bpx-player-ctrl-prev');
-    const playNextButton = document.querySelector('.bpx-player-ctrl-btn.bpx-player-ctrl-next');
-    playPrevButton.addEventListener('click', (e) => {
+    setDomBySelector([(ele) => ele.addEventListener('click', (e) => {
       e.stopImmediatePropagation();
       unsafeWindow.player.prev();
-    }, true);
-    playNextButton.addEventListener('click', (e) => {
+    }, true)], ['.bpx-player-ctrl-btn.bpx-player-ctrl-prev']);
+    setDomBySelector([(ele) => ele.addEventListener('click', (e) => {
       e.stopImmediatePropagation();
       unsafeWindow.player.next();
-    }, true);
+    }, true)], ['.bpx-player-ctrl-btn.bpx-player-ctrl-next']);
 
     const video = document.querySelector('video');
     video.addEventListener('timeupdate', onVideoNearlyEnded);

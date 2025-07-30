@@ -60,12 +60,16 @@
 // 弹幕列表
 .bpx-player-auxiliary .bpx-player-dm-wrap .bui-long-list-wrap,
 // 章节列表
-.bpx-player-viewpoint .bpx-player-viewpoint-body {
+.bpx-player-viewpoint .bpx-player-viewpoint-body,
+// 屏蔽列表
+.bpx-player-auxiliary .bpx-player-wraplist .bpx-player-bscrollbar,
+// 高级弹幕
+.bpx-player-auxiliary .bpx-player-adv-danmaku {
 
   .bscroll-vertical-scrollbar {
     width: 14px !important;
     top: 0 !important;
-    right: -2px;
+    right: -2px !important;
 
     .bscroll-indicator {
       background-color: $scrollbarColor !important;
