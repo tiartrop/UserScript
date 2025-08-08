@@ -476,6 +476,7 @@ div[class^='SectionSelector_selectorDropdown'],
 
   .chat-history-panel.new {
     height: calc(100% - 18px - 145px);
+    padding-bottom: 0 !important;
     position: static !important;
 
     .a-move-in-top {

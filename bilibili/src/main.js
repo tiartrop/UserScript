@@ -382,7 +382,7 @@ const biliHelper = {
     }, 100);
 
     // comment-lit框架
-    m('disableKeywordSearch') && (unsafeWindow.__INITIAL_STATE__?.isModern || document.querySelector('#__next') || location.href.match(/t.bilibili.com/) || location.href.match(/bilibili.com\/opus\/[0-9]+/)) && setInterval(() => {
+    m('disableKeywordSearch') && (unsafeWindow.__INITIAL_STATE__?.isModern || document.querySelector('#__next') || location.href.match(/t.bilibili.com/) || location.href.match(/bilibili.com\/opus\/[0-9]+/) || location.href.match(/bilibili.com\/[0-9]+\/dynamic/)) && setInterval(() => {
       setShadowDomBySelector(
         [this.commentRemoveKeywordLit],
         ['bili-comments #feed bili-comment-thread-renderer bili-comment-renderer bili-rich-text p a', 'bili-comments #feed bili-comment-thread-renderer bili-comment-replies-renderer bili-comment-reply-renderer bili-rich-text p a']
@@ -409,7 +409,6 @@ const biliHelper = {
           && typeof mutation.target.className.includes !== 'undefined'
           && (mutation.target.className === 'staff-name'))
           changeVideoStaffHeight();
-
 
         setDomBySelector([(ele) => ele.addEventListener('click', changePlayViewSize)], ['.bpx-player-ctrl-wide']);
         m('enableVideoPlayRate') && setDomBySelector([this.videoPlayRateMenu], ['.bpx-player-contextmenu.bpx-player-active li']);
