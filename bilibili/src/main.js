@@ -220,8 +220,8 @@ const biliHelper = {
     const func = (event) => event.stopImmediatePropagation();
     ele.parentElement.addEventListener('click', func);
     ele.parentElement.style.cursor = 'auto';
-    // 投票 || 查看图片
-    const button = ele.querySelector('span[data-type="vote"]') || ele.querySelector('span[data-type="viewpic"]');
+    // 投票 || 抽奖 || 查看图片
+    const button = ele.querySelector('span[data-type="vote"]') || ele.querySelector('span[data-type="lottery"]') || ele.querySelector('span[data-type="viewpic"]');
     if (button) {
       button.addEventListener('click', () => {
         ele.parentElement.removeEventListener('click', func);
@@ -243,7 +243,7 @@ const biliHelper = {
   // 动态屏蔽广告
   dynamicBlockAds(ele) {
     const { adsKeywords } = GM_getValue('mySettings', { adsKeywords: oriAdsKeywords });
-    if (adsKeywords.some(keyword => ele.textContent.includes(keyword)) || ele.innerHTML.includes('data-type="goods"')) {
+    if (adsKeywords.some(keyword => ele.textContent.includes(keyword)) || (ele.innerHTML.includes('data-type="goods"') && !ele.innerHTML.includes('抽奖'))) {
       const parentEle = ele.closest('.bili-dyn-list__item');
       if (parentEle) parentEle.style.display = 'none';
     }
@@ -312,6 +312,7 @@ const biliHelper = {
   commentRemoveKeywordOld(ele) {
     if (ele.href.match(/search.bilibili.com/)) {
       if (ele.nextElementSibling && ele.nextElementSibling.tagName.toLowerCase() === 'i') ele.nextElementSibling.remove();
+      if (ele.previousElementSibling && ele.previousElementSibling.tagName.toLowerCase() === 'img') ele.previousElementSibling.remove();
       const newEle = document.createElement('span');
       newEle.innerHTML = ele.textContent;
       ele.replaceWith(newEle);
@@ -367,8 +368,6 @@ const biliHelper = {
         setDomBySelector([this.setUpPanelContainer], ['.up-panel-container .membersinfo-normal .container:not(.init-no-wrap)'], false);
     }, 100);
 
-    if (unsafeWindow.__INITIAL_STATE__ && unsafeWindow.__INITIAL_STATE__.videoData) videoCount = unsafeWindow.__INITIAL_STATE__.videoData.videos;
-
     const showVideoOrder = debounce(() => {
       setDomBySelector([this.pVideoOrder], ['.video-pod__list.multip', '.bpx-player-ctrl-eplist-episodes-content'], false);
     }, 100);
@@ -399,6 +398,7 @@ const biliHelper = {
         if (mutation.target.className
           && typeof mutation.target.className.includes !== 'undefined'
           && (mutation.target.className === 'list-box' || mutation.target.className === 'bpx-player-ctrl-eplist-menu-wrap' || mutation.target.className === 'video-pod__list multip list' || mutation.target.className === 'video-episode-card')) {
+          if (unsafeWindow.__INITIAL_STATE__ && unsafeWindow.__INITIAL_STATE__.videoData) videoCount = unsafeWindow.__INITIAL_STATE__.videoData.videos;
           m('showVideoOrder') && showVideoOrder();
           m('showVidoPercent') && showVideoPercent();
           m('enableVideoReverse') && setVideoReverse();
@@ -429,6 +429,7 @@ const biliHelper = {
         m('disableKeywordSearch') && setDomBySelector([this.commentRemoveKeywordVue], ['.browser-pc .reply-item .reply-content', '.browser-pc .sub-reply-item .reply-content']);
         // new-comment.min.js
         m('disableKeywordSearch') && setDomBySelector([this.commentRemoveKeywordOld], ['#commentapp .list-item .comment-jump-url']);
+        m('disableKeywordSearch') && setDomBySelector([this.commentRemoveKeywordOld], ['#commentapp .reply-content .jump-link.normal']);
         // setDomBySelector([this.showCommentFullTime, this.showIPAdress], ['.browser-pc .reply-item .reply-time', '.browser-pc .sub-reply-item .sub-reply-time']);
       }
     };
