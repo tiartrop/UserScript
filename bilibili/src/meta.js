@@ -4,7 +4,7 @@
 // @description bilibili自用脚本。修改版面、过滤动态。
 // @author      process.env.AUTHOR
 // @match       *://*.bilibili.com/*
-// @exclude     *://message.bilibili.com/*
+// @exclude     *://message.bilibili.com/pages*
 // @exclude     *://*.bilibili.com/blackboard/newplayer.html*
 // @exclude     *://*.bilibili.com/p/html/cny-danmu/*
 // @icon        https://www.bilibili.com/favicon.ico

@@ -420,7 +420,7 @@ const biliHelper = {
             m('expandDynamic') ? this.dynamicExpand : e => e,
             m('blockDynamicAds') ? this.dynamicBlockAds : e => e
           ],
-          ['.bili-dyn-list .bili-dyn-item .bili-dyn-content .bili-rich-text__content']);
+          ['.bili-dyn-list .bili-dyn-item .bili-dyn-content .bili-rich-text__content', '.bili-dyn-list .bili-dyn-item .bili-dyn-content .opus-paragraph-children']);
 
         // comment
         m('foldComment') && setDomBySelector([this.commentAddFoldButton], ['.bili-comment-container .bili-comment', '.dynamic-card-comment .bb-comment']);

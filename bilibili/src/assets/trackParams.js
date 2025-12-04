@@ -2,8 +2,6 @@
 const trackUrlParams = [
   'broadcast_type',
   'buvid',
-  'from_source',
-  'from_spmid',
   'is_room_feed',
   'is_story_h5',
   'launch_id',
@@ -14,9 +12,11 @@ const trackUrlParams = [
   'search_source',
   'session_id',
   'timestamp',
+  'trackid',
   'unique_k',
   'up_id',
   'vd_source',
+  /^from/,
   /^share/,
   /^spm/
 ];

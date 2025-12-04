@@ -4,7 +4,7 @@ import { definePlugins } from '@gera2ld/plaid-rollup';
 import alias from "@rollup/plugin-alias";
 import nodePolyfills from 'rollup-plugin-polyfill-node';
 import userscript from 'rollup-plugin-userscript';
-import pkg from './package.json' assert { type: 'json' };
+import pkg from './package.json' with { type: 'json' };
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
