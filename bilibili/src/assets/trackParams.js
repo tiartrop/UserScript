@@ -4,6 +4,7 @@ const trackUrlParams = [
   'buvid',
   'is_room_feed',
   'is_story_h5',
+  'jump_opus',
   'launch_id',
   'liteVersion',
   'live_from',

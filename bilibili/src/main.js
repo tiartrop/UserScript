@@ -448,6 +448,21 @@ m('closeRecommendAutoPlay') && setTimeout(() => storageLocal.setItem('recommend_
 // 默认关闭小窗播放
 m('closeMinPlayWindow') && storageLocal.setItem('b_miniplayer', '0');
 
+// 默认跳转旧版专栏
+if (m('rollbackArticle') && location.href.match(/bilibili.com\/opus\/[0-9]+/)) {
+  const articleInterval = setInterval(() => {
+    if (unsafeWindow.__INITIAL_STATE__?.detail?.type === 1) {
+      const _expires = new Date();
+      _expires.setTime(_expires.getTime() + 24 * 365 * 60 * 60 * 1000);
+      document.cookie = `opus-goback=1` + `;expires=${  _expires.toUTCString()  }; path=/; domain=.bilibili.com`;
+
+      clearInterval(articleInterval);
+      location.replace('//www.bilibili.com/read/cv'.concat(unsafeWindow.__INITIAL_STATE__.detail.basic.rid_str));
+    } else if (unsafeWindow.__INITIAL_STATE__?.detail?.type === 0)
+      clearInterval(articleInterval);
+  }, 100);
+}
+
 // __INITIAL_STATE__ 只在首次赋值时拦截和处理
 let initialSet = false;
 let rawState;

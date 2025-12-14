@@ -20,6 +20,7 @@ const menus = [
   ['视频', 'closeRecommendAutoPlay', '默认关闭自动连播'],
   ['视频', 'closeMinPlayWindow', '默认关闭小窗播放'],
   ['实验室', 'rollbackCommentVer', '退回旧版评论区'],
+  ['实验室', 'rollbackArticle', '退回旧版专栏'],
   ['实验室', 'closeAiSummary', '关闭AI视频总结功能'],
   ['实验室', 'disableDanmukuAiBlock', '禁用弹幕智能云屏蔽']
 ];
