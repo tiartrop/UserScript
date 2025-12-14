@@ -234,7 +234,7 @@ const biliHelper = {
     if (ele.classList.contains('folded')) {
       ele.style.display = 'unset';
       ele.style.lineClamp = 'unset';
-      if (ele.nextElementSibling && ele.nextElementSibling.innerText === '展开') ele.nextElementSibling.remove();
+      if (ele.nextElementSibling?.innerText === '展开') ele.nextElementSibling.remove();
       // 去掉多余的空行
       if (ele.lastElementChild.tagName.toLowerCase() === 'span' && !ele.lastElementChild.classList.contains('bili-rich-text-link'))
         ele.lastElementChild.innerHTML = ele.lastElementChild.innerHTML.trim();
@@ -311,8 +311,8 @@ const biliHelper = {
   // 评论区移除关键词搜索
   commentRemoveKeywordOld(ele) {
     if (ele.href.match(/search.bilibili.com/)) {
-      if (ele.nextElementSibling && ele.nextElementSibling.tagName.toLowerCase() === 'i') ele.nextElementSibling.remove();
-      if (ele.previousElementSibling && ele.previousElementSibling.tagName.toLowerCase() === 'img') ele.previousElementSibling.remove();
+      if (ele.nextElementSibling?.tagName?.toLowerCase() === 'i') ele.nextElementSibling.remove();
+      if (ele.previousElementSibling?.tagName?.toLowerCase() === 'img') ele.previousElementSibling.remove();
       const newEle = document.createElement('span');
       newEle.innerHTML = ele.textContent;
       ele.replaceWith(newEle);
@@ -322,13 +322,13 @@ const biliHelper = {
   showCommentFullTime(ele) {
     if (!ele.__vueParentComponent) return;
     const reply = ele.__vueParentComponent.props.reply || ele.__vueParentComponent.props.subReply;
-    if (reply && reply.ctime) ele.innerHTML = dateTimeFormatter(reply.ctime * 1e3) || '';
+    if (reply?.ctime) ele.innerHTML = dateTimeFormatter(reply.ctime * 1e3) || '';
   },
   // 评论区显示评论IP地址（失效，可移步https://greasyfork.org/zh-CN/scripts/448434）
   showIPAdress(ele) {
     if (!ele.__vueParentComponent) return;
     const getLocationSpan = (reply, attrs = '') => {
-      if (reply && reply.reply_control && reply.reply_control.location)
+      if (reply?.reply_control?.location)
         return `<span class="reply-location" ${attrs}>${reply.reply_control.location || ''}</span>`;
       else
         return '';
@@ -364,7 +364,7 @@ const biliHelper = {
     window.addEventListener('resize', changePlayListHeight);
 
     const changeVideoStaffHeight = debounce(() => {
-      if (unsafeWindow.__INITIAL_STATE__ && unsafeWindow.__INITIAL_STATE__.videoData.staff)
+      if (unsafeWindow.__INITIAL_STATE__?.videoData?.staff)
         setDomBySelector([this.setUpPanelContainer], ['.up-panel-container .membersinfo-normal .container:not(.init-no-wrap)'], false);
     }, 100);
 
@@ -398,7 +398,7 @@ const biliHelper = {
         if (mutation.target.className
           && typeof mutation.target.className.includes !== 'undefined'
           && (mutation.target.className === 'list-box' || mutation.target.className === 'bpx-player-ctrl-eplist-menu-wrap' || mutation.target.className === 'video-pod__list multip list' || mutation.target.className === 'video-episode-card')) {
-          if (unsafeWindow.__INITIAL_STATE__ && unsafeWindow.__INITIAL_STATE__.videoData) videoCount = unsafeWindow.__INITIAL_STATE__.videoData.videos;
+          if (unsafeWindow.__INITIAL_STATE__?.videoData) videoCount = unsafeWindow.__INITIAL_STATE__.videoData.videos;
           m('showVideoOrder') && showVideoOrder();
           m('showVidoPercent') && showVideoPercent();
           m('enableVideoReverse') && setVideoReverse();
