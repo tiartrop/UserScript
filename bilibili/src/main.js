@@ -197,7 +197,7 @@ const biliHelper = {
       const lengthArr = videoDurationEle.map(ele => ele.firstElementChild ? ele.lastElementChild.innerHTML : ele.innerHTML);
       videoPercentArr = getVideoLengthPercent(lengthArr);
       videoDurationEle.forEach((child, index) => {
-        child.outerHTML = `<div class="stat-item duration" style="display: flex;"><div>${videoPercentArr[index]}%&smid;</div><div">${lengthArr[index]}</div></div>`;
+        child.outerHTML = `<div class="stat-item duration" style="display: flex;"><div>${videoPercentArr[index]}%&smid;</div><div>${lengthArr[index]}</div></div>`;
       });
     }
   },
@@ -217,17 +217,17 @@ const biliHelper = {
   },
   // 动态禁止点击跳转
   dynamicStopJump(ele) {
-    const func = (event) => event.stopImmediatePropagation();
-    ele.parentElement.addEventListener('click', func);
+    const allowSelector =
+      '.dyn-card-opus__summary__action,' +
+      'span[data-type="vote"], ' +
+      'span[data-type="lottery"], ' +
+      'span[data-type="viewpic"]';
+
+    ele.parentElement.addEventListener('click', e => {
+      if (e.target.closest(allowSelector)) return;
+      e.stopImmediatePropagation();
+    }, true);
     ele.parentElement.style.cursor = 'auto';
-    // 投票 || 抽奖 || 查看图片
-    const button = ele.querySelector('span[data-type="vote"]') || ele.querySelector('span[data-type="lottery"]') || ele.querySelector('span[data-type="viewpic"]');
-    if (button) {
-      button.addEventListener('click', () => {
-        ele.parentElement.removeEventListener('click', func);
-        setTimeout(() => ele.parentElement.addEventListener('click', func), 500);
-      });
-    }
   },
   // 动态自动展开文本
   dynamicExpand(ele) {
@@ -236,8 +236,8 @@ const biliHelper = {
       ele.style.lineClamp = 'unset';
       if (ele.nextElementSibling?.innerText === '展开') ele.nextElementSibling.remove();
       // 去掉多余的空行
-      if (ele.lastElementChild.tagName.toLowerCase() === 'span' && !ele.lastElementChild.classList.contains('bili-rich-text-link'))
-        ele.lastElementChild.innerHTML = ele.lastElementChild.innerHTML.trim();
+      if (ele.lastElementChild.tagName.toLowerCase() === 'span' && !ele.lastElementChild.classList.contains('bili-rich-text-link') && ele.lastElementChild.innerHTML.trim() === '')
+        ele.lastElementChild.remove();
     }
   },
   // 动态屏蔽广告
@@ -400,7 +400,7 @@ const biliHelper = {
           && (mutation.target.className === 'list-box' || mutation.target.className === 'bpx-player-ctrl-eplist-menu-wrap' || mutation.target.className === 'video-pod__list multip list' || mutation.target.className === 'video-episode-card')) {
           if (unsafeWindow.__INITIAL_STATE__?.videoData) videoCount = unsafeWindow.__INITIAL_STATE__.videoData.videos;
           m('showVideoOrder') && showVideoOrder();
-          m('showVidoPercent') && showVideoPercent();
+          m('showVideoPercent') && showVideoPercent();
           m('enableVideoReverse') && setVideoReverse();
           changePlayListHeight();
         }
@@ -452,14 +452,10 @@ m('closeMinPlayWindow') && storageLocal.setItem('b_miniplayer', '0');
 if (m('rollbackArticle') && location.href.match(/bilibili.com\/opus\/[0-9]+/)) {
   const articleInterval = setInterval(() => {
     if (unsafeWindow.__INITIAL_STATE__?.detail?.type === 1) {
-      const _expires = new Date();
-      _expires.setTime(_expires.getTime() + 24 * 365 * 60 * 60 * 1000);
-      document.cookie = `opus-goback=1` + `;expires=${  _expires.toUTCString()  }; path=/; domain=.bilibili.com`;
-
       clearInterval(articleInterval);
-      location.replace('//www.bilibili.com/read/cv'.concat(unsafeWindow.__INITIAL_STATE__.detail.basic.rid_str));
-    } else if (unsafeWindow.__INITIAL_STATE__?.detail?.type === 0)
-      clearInterval(articleInterval);
+      if (document.querySelector('.link-card-eva3')) return;
+      location.replace('//www.bilibili.com/read/cv'.concat(unsafeWindow.__INITIAL_STATE__.detail.basic.rid_str, '/?opus_fallback=1'));
+    } else if (unsafeWindow.__INITIAL_STATE__?.detail?.type === 0) clearInterval(articleInterval);
   }, 100);
 }
 

@@ -3,7 +3,7 @@ const defaultSettings = {
   enableVideoPlayRate: true,
   enableVideoReverse: true,
   showVideoOrder: true,
-  showVidoPercent: true,
+  showVideoPercent: true,
   stopDynamicJump: true,
   expandDynamic: true,
   blockDynamicAds: true,

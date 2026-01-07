@@ -20,6 +20,11 @@
   display: none !important;
 }
 
+// 隐藏浏览器版本过低提示
+.browser-tip-dialog-mask {
+  display: none;
+}
+
 // 隐藏登录弹窗
 .login-tip,
 .privacy-dialog {
@@ -590,6 +595,20 @@ html[lab-style*="dark"] .player-full-win #aside-area-vm {
   .opus-detail {
     min-width: 900px;
 
+    .bili-opus-view {
+      .opus-module-top__album__cover {
+        width: unset;
+
+        .b-img {
+          background-color: var(--bg1);
+        }
+
+        picture img {
+          object-fit: contain;
+        }
+      }
+    }
+
     .right-sidebar-wrap {
       margin-left: 940px;
     }
@@ -613,6 +632,28 @@ html[lab-style*="dark"] .player-full-win #aside-area-vm {
   padding: 12px 20px 16px !important;
 }
 
+.article-container .article-container__content {
+
+  .title-container {
+    padding: 0 20px;
+  }
+
+  .article-up-info {
+    width: 100%;
+
+    .up-left {
+      margin-left: 20px;
+    }
+
+    .up-btn {
+      margin-right: 20px;
+    }
+  }
+
+  #article-content {
+    padding: 0 20px;
+  }
+}
 
 /*
   投稿页简化

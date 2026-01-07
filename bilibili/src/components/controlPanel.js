@@ -10,7 +10,7 @@ const menus = [
   ['视频', 'enableVideoPlayRate', '右键小窗倍速'],
   ['视频', 'enableVideoReverse', '播放列表倒序'],
   ['视频', 'showVideoOrder', '显示分P序号'],
-  ['视频', 'showVidoPercent', '显示分P百分比时长'],
+  ['视频', 'showVideoPercent', '显示分P百分比时长'],
   ['动态', 'stopDynamicJump', '动态禁止点击跳转'],
   ['动态', 'expandDynamic', '动态自动展开文本'],
   ['动态', 'blockDynamicAds', '动态屏蔽广告'],
