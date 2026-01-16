@@ -219,6 +219,7 @@ const biliHelper = {
   dynamicStopJump(ele) {
     const allowSelector =
       '.dyn-card-opus__summary__action,' +
+      '.bili-rich-text-link,' +
       'span[data-type="vote"], ' +
       'span[data-type="lottery"], ' +
       'span[data-type="viewpic"]';
@@ -231,19 +232,21 @@ const biliHelper = {
   },
   // 动态自动展开文本
   dynamicExpand(ele) {
-    if (ele.classList.contains('folded')) {
-      ele.style.display = 'unset';
-      ele.style.lineClamp = 'unset';
-      if (ele.nextElementSibling?.innerText === '展开') ele.nextElementSibling.remove();
-      // 去掉多余的空行
-      if (ele.lastElementChild.tagName.toLowerCase() === 'span' && !ele.lastElementChild.classList.contains('bili-rich-text-link') && ele.lastElementChild.innerHTML.trim() === '')
-        ele.lastElementChild.remove();
-    }
+    let targetEle;
+    if (ele.classList.contains('folded')) targetEle = ele;
+    else if ((ele.parentElement.classList.contains('folded') && ele.firstElementChild?.classList.contains('bili-ellipsis'))) targetEle = ele.firstChild;
+    else return;
+    targetEle.style.display = 'unset';
+    targetEle.style.webkitLineClamp = 'unset';
+    if (ele.nextElementSibling?.innerText === '展开') ele.nextElementSibling.remove();
+    // 去掉多余的空行
+    while (targetEle.lastElementChild.tagName.toLowerCase() === 'span' && !targetEle.lastElementChild.classList.contains('bili-rich-text-link') && targetEle.lastElementChild.innerHTML.trim() === '')
+      targetEle.lastElementChild.remove();
   },
   // 动态屏蔽广告
   dynamicBlockAds(ele) {
     const { adsKeywords } = GM_getValue('mySettings', { adsKeywords: oriAdsKeywords });
-    if (adsKeywords.some(keyword => ele.textContent.includes(keyword)) || (ele.innerHTML.includes('data-type="goods"') && !ele.innerHTML.includes('抽奖'))) {
+    if (adsKeywords.some(keyword => ele.textContent.includes(keyword)) || (/data-type="goods"|opus-text-rich-hl/.test(ele.innerHTML) && !ele.innerHTML.includes('抽奖'))) {
       const parentEle = ele.closest('.bili-dyn-list__item');
       if (parentEle) parentEle.style.display = 'none';
     }
@@ -516,7 +519,7 @@ async function StartObservePage() {
   observer.observe(document.body, config);
 
   // 控制面板
-  document.body.appendChild(containerElement);
+  setTimeout(() => document.body.appendChild(containerElement), 2000);
 }
 
 StartObservePage();
