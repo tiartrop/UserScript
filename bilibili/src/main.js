@@ -342,8 +342,6 @@ const biliHelper = {
   },
   init() {
     const changePlayViewSize = debounce(async () => {
-      if (!location.href.match(/bilibili.com\/video/) && !location.href.match(/bilibili.com\/list/)) return;
-      await mscststs.wait('#bilibili-player');
       setDomBySelector([(ele) => (ele.style.width = `${calVideoPageSize().leftContainerWidth}px`)], ['.left-container', '.playlist-container--left'], false);
       setDomBySelector([(ele) => (ele.style.height = `${calVideoPageSize().videoHeight}px`)], ['#playerWrap'], false);
       setDomBySelector([(ele) => {
@@ -352,10 +350,14 @@ const biliHelper = {
       }], ['#bilibili-player'], false);
     }, 100);
 
-    if (m('widerVideoPanelFit')) {
+    if (m('widerVideoPanelFit') && (location.href.match(/bilibili.com\/video/) || location.href.match(/bilibili.com\/list/))) {
       changePlayViewSize();
       window.addEventListener('resize', changePlayViewSize);
       window.addEventListener('popstate', changePlayViewSize);
+      setTimeout(async () => {
+        await mscststs.wait('.bpx-player-ctrl-wide');
+        setDomBySelector([(ele) => ele.addEventListener('click', changePlayViewSize)], ['.bpx-player-ctrl-wide']);
+      }, 1000);
     }
 
     const changePlayListHeight = debounce(async () => {
@@ -395,12 +397,11 @@ const biliHelper = {
       );
     }, 1000);
 
-    const callback = mutationsList => {
+    const videoCallback = mutationsList => {
       for (const mutation of mutationsList) {
-        // viedo
         if (mutation.target.className
           && typeof mutation.target.className.includes !== 'undefined'
-          && (mutation.target.className === 'list-box' || mutation.target.className === 'bpx-player-ctrl-eplist-menu-wrap' || mutation.target.className === 'video-pod__list multip list' || mutation.target.className === 'video-episode-card')) {
+          && (mutation.target.className === 'list-box' || mutation.target.className.includes('bpx-player') || mutation.target.className === 'video-pod__list multip list' || mutation.target.className === 'video-episode-card')) {
           if (unsafeWindow.__INITIAL_STATE__?.videoData) videoCount = unsafeWindow.__INITIAL_STATE__.videoData.videos;
           m('showVideoOrder') && showVideoOrder();
           m('showVideoPercent') && showVideoPercent();
@@ -412,32 +413,33 @@ const biliHelper = {
           && typeof mutation.target.className.includes !== 'undefined'
           && (mutation.target.className === 'staff-name'))
           changeVideoStaffHeight();
-
-        setDomBySelector([(ele) => ele.addEventListener('click', changePlayViewSize)], ['.bpx-player-ctrl-wide']);
-        m('enableVideoPlayRate') && setDomBySelector([this.videoPlayRateMenu], ['.bpx-player-contextmenu.bpx-player-active li']);
-
-        // space-dynamic
-        setDomBySelector(
-          [
-            m('stopDynamicJump') ? this.dynamicStopJump : e => e,
-            m('expandDynamic') ? this.dynamicExpand : e => e,
-            m('blockDynamicAds') ? this.dynamicBlockAds : e => e
-          ],
-          ['.bili-dyn-list .bili-dyn-item .bili-dyn-content .bili-rich-text__content', '.bili-dyn-list .bili-dyn-item .bili-dyn-content .opus-paragraph-children']);
-
-        // comment
-        m('foldComment') && setDomBySelector([this.commentAddFoldButton], ['.bili-comment-container .bili-comment', '.dynamic-card-comment .bb-comment']);
-        m('foldComment') && setShadowDomBySelector([this.commentAddFoldButton], ['.bili-dyn-comment bili-comments']);
-        // comment-pc-vue.next.js
-        m('disableKeywordSearch') && setDomBySelector([this.commentRemoveKeywordVue], ['.browser-pc .reply-item .reply-content', '.browser-pc .sub-reply-item .reply-content']);
-        // new-comment.min.js
-        m('disableKeywordSearch') && setDomBySelector([this.commentRemoveKeywordOld], ['#commentapp .list-item .comment-jump-url']);
-        m('disableKeywordSearch') && setDomBySelector([this.commentRemoveKeywordOld], ['#commentapp .reply-content .jump-link.normal']);
-        // setDomBySelector([this.showCommentFullTime, this.showIPAdress], ['.browser-pc .reply-item .reply-time', '.browser-pc .sub-reply-item .sub-reply-time']);
       }
+
+      m('enableVideoPlayRate') && setDomBySelector([this.videoPlayRateMenu], ['.bpx-player-contextmenu.bpx-player-active li']);
     };
 
-    return callback;
+    const dynamicCallback = () => {
+      setDomBySelector(
+        [
+          m('stopDynamicJump') ? this.dynamicStopJump : e => e,
+          m('expandDynamic') ? this.dynamicExpand : e => e,
+          m('blockDynamicAds') ? this.dynamicBlockAds : e => e
+        ],
+        ['.bili-dyn-list .bili-dyn-item .bili-dyn-content .bili-rich-text__content', '.bili-dyn-list .bili-dyn-item .bili-dyn-content .opus-paragraph-children']);
+    };
+
+    const commentCallback = () => {
+      m('foldComment') && setDomBySelector([this.commentAddFoldButton], ['.bili-comment-container .bili-comment', '.dynamic-card-comment .bb-comment']);
+      m('foldComment') && setShadowDomBySelector([this.commentAddFoldButton], ['.bili-dyn-comment bili-comments']);
+      // comment-pc-vue.next.js
+      m('disableKeywordSearch') && setDomBySelector([this.commentRemoveKeywordVue], ['.browser-pc .reply-item .reply-content', '.browser-pc .sub-reply-item .reply-content']);
+      // new-comment.min.js
+      m('disableKeywordSearch') && setDomBySelector([this.commentRemoveKeywordOld], ['#commentapp .list-item .comment-jump-url']);
+      m('disableKeywordSearch') && setDomBySelector([this.commentRemoveKeywordOld], ['#commentapp .reply-content .jump-link.normal']);
+      // setDomBySelector([this.showCommentFullTime, this.showIPAdress], ['.browser-pc .reply-item .reply-time', '.browser-pc .sub-reply-item .sub-reply-time']);
+    };
+
+    return { videoCallback, dynamicCallback, commentCallback };
   }
 
 };
@@ -473,13 +475,17 @@ Object.defineProperty(unsafeWindow, '__INITIAL_STATE__', {
   set(value) {
     // 只拦截第一次赋值
     if (!initialSet) {
-      // 退回new-comment.min.js版评论区（笔记功能不全且预计未来失效）
-      if (m('rollbackCommentVer')) value.isModern = false;
-      // 退回comment-pc-vue.next.js版评论区（已失效）
-      // value.abtest.comment_next_version = '';
-      // 关闭Ai视频总结功能
-      if (m('closeAiSummary') && value.abtest) value.abtest.ai_summary_version = '';
       initialSet = true;
+      setTimeout(() => {
+        try {
+          // 退回new-comment.min.js版评论区（笔记功能不全且预计未来失效）
+          if (m('rollbackCommentVer')) value.isModern = false;
+          // 退回comment-pc-vue.next.js版评论区（已失效）
+          // value.abtest.comment_next_version = '';
+          // 关闭Ai视频总结功能
+          if (m('closeAiSummary') && value.abtest) value.abtest.ai_summary_version = '';
+        } catch (e) { }
+      }, 0);
       // 解除劫持，恢复正常属性
       Object.defineProperty(unsafeWindow, '__INITIAL_STATE__', {
         configurable: true,
@@ -514,9 +520,24 @@ if (m('disableDanmukuAiBlock')) {
 }
 
 async function StartObservePage() {
-  await mscststs.wait('#app') || await mscststs.wait('#__next');
-  const observer = new MutationObserver(biliHelper.init());
-  observer.observe(document.body, config);
+  await mscststs.wait('#app', true) || await mscststs.wait('#__next', true);
+  const { videoCallback, dynamicCallback, commentCallback } = biliHelper.init();
+
+  const setupObserver = async (targets, callback, timeout = 10) => {
+    let page = null;
+
+    for (const t of targets) {
+      page = await mscststs.wait(t, true, timeout);
+      if (page) {
+        const observer = new MutationObserver(callback);
+        observer.observe(page, config);
+      }
+    }
+  };
+
+  setupObserver(['.right-container', '#bilibili-player'], videoCallback);
+  setupObserver(['.bili-dyn-list', '.space-dynamic__content'], dynamicCallback);
+  setupObserver(['.bili-dyn-list', '#commentapp'], commentCallback);
 
   // 控制面板
   setTimeout(() => document.body.appendChild(containerElement), 2000);
