@@ -75,7 +75,7 @@ const biliHelper = {
     video.addEventListener('timeupdate', onVideoNearlyEnded);
     const eplistContent = document.querySelector('.bpx-player-ctrl-eplist-episodes-content') || document.querySelector('.bpx-player-ctrl-eplist-section-content');
     let eplistContentItems = [];
-    if (eplistContent) setTimeout(() => eplistContentItems = eplistContent.querySelectorAll('.bpx-player-ctrl-eplist-multi-menu-item'), 1000);
+    if (eplistContent) setTimeout(() => eplistContentItems = eplistContent.querySelectorAll('.bpx-player-ctrl-eplist-multi-menu-item'), 500);
 
     const reverseButton = b.reserve((event) => {
       event.stopImmediatePropagation();
@@ -94,6 +94,18 @@ const biliHelper = {
       if (eplistContent) reverseItems(eplistContent);
 
       reverseItems(ele);
+
+      const active = ele.querySelector('[data-scrolled="true"]');
+      if (!active) return;
+      const prev = active.previousElementSibling;
+      const target = prev || active;
+      const parent = getScrollParent(target);
+      const targetScrollTop =
+        parent.scrollTop +
+        target.getBoundingClientRect().top -
+        parent.getBoundingClientRect().top;
+
+      parent.scrollTo({ top: targetScrollTop, behavior: 'smooth' });
     });
 
     function onVideoNearlyEnded() {
@@ -119,6 +131,29 @@ const biliHelper = {
           }, 100);
         }
       }
+    }
+
+    function getScrollParent(el, direction = 'y') {
+      if (!el || el === document.body) return document.documentElement;
+
+      let parent = el.parentElement;
+
+      while (parent) {
+        const style = window.getComputedStyle(parent);
+        const overflowX = style.overflowX;
+        const overflowY = style.overflowY;
+
+        const isScrollableY = ['scroll', 'auto'].includes(overflowY) && parent.scrollHeight > parent.clientHeight;
+        const isScrollableX = ['scroll', 'auto'].includes(overflowX) && parent.scrollWidth > parent.clientWidth;
+
+        const hit = direction === 'y' ? isScrollableY : direction === 'x' ? isScrollableX : isScrollableY || isScrollableX;
+
+        if (hit) return parent;
+
+        parent = parent.parentElement;
+      }
+
+      return document.documentElement; // 兜底返回根元素
     }
 
     function reset() {
