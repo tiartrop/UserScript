@@ -100,6 +100,7 @@ const biliHelper = {
       const prev = active.previousElementSibling;
       const target = prev || active;
       const parent = getScrollParent(target);
+      if (!parent.closest('.right-container')) return;
       const targetScrollTop =
         parent.scrollTop +
         target.getBoundingClientRect().top -
