@@ -492,11 +492,12 @@ m('closeMinPlayWindow') && storageLocal.setItem('b_miniplayer', '0');
 // 默认跳转旧版专栏
 if (m('rollbackArticle') && location.href.match(/bilibili.com\/opus\/[0-9]+/)) {
   const articleInterval = setInterval(() => {
-    if (unsafeWindow.__INITIAL_STATE__?.detail?.type === 1) {
+    const type = unsafeWindow.__INITIAL_STATE__?.readInfo?.type;
+    if (type === 4) {
       clearInterval(articleInterval);
       if (document.querySelector('.link-card-eva3')) return;
       location.replace('//www.bilibili.com/read/cv'.concat(unsafeWindow.__INITIAL_STATE__.detail.basic.rid_str, '/?opus_fallback=1'));
-    } else if (unsafeWindow.__INITIAL_STATE__?.detail?.type === 0) clearInterval(articleInterval);
+    } else if (type === 2 || type === 3) clearInterval(articleInterval);
   }, 100);
 }
 
