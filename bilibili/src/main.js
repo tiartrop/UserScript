@@ -256,9 +256,9 @@ const biliHelper = {
     const allowSelector =
       '.dyn-card-opus__summary__action,' +
       '.bili-rich-text-link,' +
-      'span[data-type="vote"], ' +
-      'span[data-type="lottery"], ' +
-      'span[data-type="viewpic"]';
+      '[data-type="vote"], ' +
+      '[data-type="lottery"], ' +
+      '[data-type="viewpic"]';
 
     ele.parentElement.addEventListener('click', e => {
       if (e.target.closest(allowSelector)) return;
