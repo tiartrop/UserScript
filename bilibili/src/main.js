@@ -282,7 +282,7 @@ const biliHelper = {
   // 动态屏蔽广告
   dynamicBlockAds(ele) {
     const { adsKeywords } = GM_getValue('mySettings', { adsKeywords: oriAdsKeywords });
-    if (adsKeywords.some(keyword => ele.textContent.includes(keyword)) || (/data-type="goods"|opus-text-rich-hl/.test(ele.innerHTML) && !ele.innerHTML.includes('抽奖'))) {
+    if (adsKeywords.some(keyword => ele.textContent.includes(keyword)) || (/data-type="goods"|opus-text-rich-hl/.test(ele.innerHTML) && !/opus-text-rich-hl\s*at/.test(ele.innerHTML) && !ele.innerHTML.includes('抽奖'))) {
       const parentEle = ele.closest('.bili-dyn-list__item');
       if (parentEle) parentEle.style.display = 'none';
     }

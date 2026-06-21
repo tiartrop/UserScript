@@ -459,9 +459,9 @@ div[class^='SectionSelector_selectorDropdown'],
 
 #aside-area-vm {
 
-  .rank-list-section {
-    height: 18px;
-    background: unset !important;
+  #rank-list-vm {
+    height: 18px !important;
+    background: unset;
 
     #rank-list-ctnr-box {
       height: 18px !important;
@@ -509,7 +509,7 @@ html[lab-style*="dark"] #room-background-vm .room-bg.p-fixed::after {
 
 html[lab-style*="dark"] #aside-area-vm {
 
-  .rank-list-section.new #rank-list-ctnr-box {
+  #rank-list-vm #rank-list-ctnr-box {
     background: rgba(0, 0, 0, .3);
   }
 
