@@ -519,7 +519,7 @@ Object.defineProperty(unsafeWindow, '__INITIAL_STATE__', {
           if (m('rollbackCommentVer')) value.isModern = false;
           // 退回comment-pc-vue.next.js版评论区（已失效）
           // value.abtest.comment_next_version = '';
-          // 关闭Ai视频总结功能
+          // 关闭Ai视频总结功能（可能失效）
           if (m('closeAiSummary') && value.abtest) value.abtest.ai_summary_version = '';
         } catch (e) { }
       }, 0);
@@ -534,6 +534,9 @@ Object.defineProperty(unsafeWindow, '__INITIAL_STATE__', {
     rawState = value;
   }
 });
+
+// 禁止隐藏自动播放
+GM.GM_cookie.delete({ name: 'buvid3' });
 
 // 禁用弹幕智能云屏蔽
 // 参考https://github.com/the1812/Bilibili-Evolved/discussions/4920

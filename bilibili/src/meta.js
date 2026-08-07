@@ -12,6 +12,7 @@
 // @grant       GM_openInTab
 // @grant       GM_getValue
 // @grant       GM_setValue
+// @grant       GM_cookie
 // @license     MIT
 // @run-at      document-start
 // @namespace    https://github.com/tiartrop/UserScript

@@ -619,11 +619,37 @@ html[lab-style*="dark"] .player-full-win #aside-area-vm {
   cursor: auto;
 }
 
+.bili-dyn-item__body {
+  .bili-dyn-content {
+    width: 100%;
+
+    .bili-dyn-content__orig__major {
+      width: 100%;
+    }
+
+    .bili-dyn-card-video__desc {
+      line-clamp: unset;
+      -webkit-line-clamp: unset;
+      height: unset;
+      flex: 1;
+      margin: 6px 0;
+
+      + .bili-dyn-card-video__stat.fs-small {
+        position: relative;
+        left: 0;
+        bottom: 0;
+      }
+    }
+  }
+}
+
 .bili-dyn-item__footer {
   height: 3.5em !important;
+  justify-content: space-between;
 }
 
 .bili-dyn-item__ornament .dyn-decoration-card,
+.bili-dyn-ornament,
 .bili-dyn-interaction {
   display: none;
 }
