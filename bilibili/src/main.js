@@ -536,7 +536,10 @@ Object.defineProperty(unsafeWindow, '__INITIAL_STATE__', {
 });
 
 // 禁止隐藏自动播放
-GM.GM_cookie.delete({ name: 'buvid3' });
+setInterval(() => {
+  GM_cookie.delete({ name: 'buvid3' });
+  GM_cookie.delete({ name: 'buvid4' });
+}, 1000)
 
 // 禁用弹幕智能云屏蔽
 // 参考https://github.com/the1812/Bilibili-Evolved/discussions/4920
