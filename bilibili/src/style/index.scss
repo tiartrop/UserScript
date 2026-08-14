@@ -429,7 +429,7 @@ div[class^='SectionSelector_selectorDropdown'],
 
 .announcement-wrapper,
 #rank-list-ctnr-box .tabs .pilot {
-  display: none;
+  display: none !important;
 }
 
 // 直播评价
@@ -457,6 +457,11 @@ div[class^='SectionSelector_selectorDropdown'],
   display: none;
 }
 
+// 访客气泡
+#welcome-area-bottom-vm {
+  display: none;
+}
+
 #aside-area-vm {
 
   #rank-list-vm {
@@ -477,6 +482,10 @@ div[class^='SectionSelector_selectorDropdown'],
   .chat-history-panel,
   #chat-control-panel-vm {
     background: rgba(255, 255, 255, .8);
+
+    .chat-history-list.with-brush-prompt {
+      height: 100%;
+    }
   }
 
   .chat-history-panel.new {
@@ -634,7 +643,7 @@ html[lab-style*="dark"] .player-full-win #aside-area-vm {
       flex: 1;
       margin: 6px 0;
 
-      + .bili-dyn-card-video__stat.fs-small {
+      +.bili-dyn-card-video__stat.fs-small {
         position: relative;
         left: 0;
         bottom: 0;
