@@ -59,7 +59,9 @@ const biliHelper = {
     }
   },
   // 视频播放倒序
-  videoListReverse(ele) {
+  async videoListReverse(ele) {
+    if (ele.querySelector('.multi-p')) return;
+
     const oriVideoPrev = unsafeWindow.player.prev;
     const oriVideoNext = unsafeWindow.player.next;
     setDomBySelector([(ele) => ele.addEventListener('click', (e) => {
@@ -72,10 +74,10 @@ const biliHelper = {
     }, true)], ['.bpx-player-ctrl-btn.bpx-player-ctrl-next']);
 
     const video = document.querySelector('video');
-    video.addEventListener('timeupdate', onVideoNearlyEnded);
-    const eplistContent = document.querySelector('.bpx-player-ctrl-eplist-episodes-content') || document.querySelector('.bpx-player-ctrl-eplist-section-content');
+
+    const eplistContent = await waitForEplistContent('.bpx-player-ctrl-eplist-section-content', '.bpx-player-ctrl-eplist-episodes-content');
     let eplistContentItems = [];
-    if (eplistContent) setTimeout(() => eplistContentItems = eplistContent.querySelectorAll('.bpx-player-ctrl-eplist-multi-menu-item'), 500);
+    setTimeout(() => eplistContentItems = eplistContent.querySelectorAll('.bpx-player-ctrl-eplist-multi-menu-item'), 500);
 
     const reverseButton = b.reserve((event) => {
       event.stopImmediatePropagation();
@@ -85,17 +87,16 @@ const biliHelper = {
         unsafeWindow.player.prev = oriVideoNext;
       } else reset();
 
-      function reverseItems(parentElement) {
-        const items = Array.from(parentElement.children);
-        parentElement.innerHTML = '';
-        items.reverse().forEach(item => parentElement.appendChild(item));
-      }
-
-      if (eplistContent) reverseItems(eplistContent);
+      if (eplistContent.firstElementChild.className === 'bpx-player-ctrl-eplist-episodes') {
+        eplistContent.children.forEach(item => {
+          if (item.firstElementChild.classList.contains('bpx-state-multi-active-item'))
+            reverseItems(item.querySelector('ul'));
+        });
+      } else reverseItems(eplistContent);
 
       reverseItems(ele);
 
-      const active = ele.querySelector('[data-scrolled="true"]');
+      const active = ele.querySelector('[data-scrolled="true"]') || ele.querySelector('.active');
       if (!active) return;
       const prev = active.previousElementSibling;
       const target = prev || active;
@@ -109,29 +110,101 @@ const biliHelper = {
       parent.scrollTo({ top: targetScrollTop, behavior: 'smooth' });
     });
 
-    function onVideoNearlyEnded() {
-      if ((document.querySelector('.continuous-btn .switch-btn.on') || video.__nearlyEnded) && reverseButton.innerHTML === '↑☰') {
-        const remaining = video.duration - video.currentTime;
-        if (remaining <= 1 && !video.__nearlyEnded) {
-          video.__nearlyEnded = true;
-          document.querySelector('.continuous-btn').click();
+    // 旧-分P选集
+    if (ele.parentElement.classList.contains('cur-list')) {
+      reverseButton.style.color = '#757575';
+      reverseButton.style.fontWeight = 'bold';
+      ele.parentElement.previousElementSibling.firstElementChild.appendChild(reverseButton);
+    }
+    // 旧-合集
+    else if (ele.parentElement.classList.contains('video-sections-item')) {
+      // 多组
+      if (ele.previousElementSibling) {
+        reverseButton.style.opacity = '0.4';
+        ele.previousElementSibling.firstElementChild.appendChild(reverseButton);
+      }
+      // 单组
+      else
+        ele.parentElement.parentElement.previousElementSibling.querySelector('.second-line_left').appendChild(reverseButton);
+    }
+    // 新
+    else if (ele.classList.contains('video-pod__list')) {
+      // 多组
+      if (ele.parentElement.parentElement.querySelector('.video-pod__slide')) {
+        document.querySelector('.video-pod .video-pod__header .header-bottom .left').appendChild(reverseButton);
+
+        document.querySelectorAll('.slide-item:not(.active)').forEach((item) => item.onclick = () => {
+          reset();
+          eplistContent.innerHTML = '';
+          eplistContentItems.forEach(item => {
+            eplistContent.appendChild(item);
+          });
+        });
+      }
+      // 单组
+      else {
+        const podHeader = document.querySelector('.video-pod .video-pod__header');
+        podHeader.lastElementChild.querySelector('.left').appendChild(reverseButton);
+        if (!podHeader.querySelector('.right').childElementCount) {
+          podHeader.querySelector('.right').appendChild(b.continuous(unsafeWindow.player));
+          video.addEventListener('timeupdate', onVideoNearlyEnded);
         }
-        if (remaining <= 0.1 && !video.__almostEnded) {
-          video.__almostEnded = true;
-          unsafeWindow.player.goto(-1);
-          const ableAutoPlay = setInterval(() => {
-            if (document.querySelector('.continuous-btn .switch-btn.on')) {
-              video.__nearlyEnded = false;
-              video.__almostEnded = false;
-              clearInterval(ableAutoPlay);
-            }
-            else {
-              const offBtn = document.querySelector('.continuous-btn .switch-btn:not(.on)');
-              if (offBtn) offBtn.click();
-            }
-          }, 100);
+        if (podHeader.querySelector('.view-mode')) {
+          podHeader.querySelector('.view-mode').onclick = () => {
+            reset();
+            eplistContent.innerHTML = '';
+            eplistContentItems.forEach(item => {
+              eplistContent.appendChild(item);
+            });
+          };
         }
       }
+    }
+    // 多单组
+    else if (ele.classList.contains('page-list')) {
+      document.querySelector('.video-pod .video-pod__header .header-bottom .left').appendChild(reverseButton);
+
+      const element = ele.previousElementSibling;
+      const observer = new MutationObserver(() => {
+        if (element.classList.contains('active')) reverseButton.setAttribute('data-show', 'on');
+        else {
+          reverseButton.setAttribute('data-show', 'off');
+          if (reverseButton.innerHTML === '↑☰') reverseItems(ele);
+          reset();
+        }
+      });
+
+      observer.observe(element, {
+        attributes: true,
+        attributeFilter: ['class']
+      });
+    }
+
+    function waitForEplistContent(selectorA, selectorB) {
+      return new Promise(resolve => {
+        const timer = setInterval(() => {
+          const el =
+            document.querySelector(selectorA) ||
+            document.querySelector(selectorB);
+
+          if (el) {
+            clearInterval(timer);
+            resolve(el);
+          }
+        }, 50);
+      });
+    }
+
+    function reverseItems(parentElement) {
+      const items = Array.from(parentElement.children);
+      parentElement.innerHTML = '';
+      items.reverse().forEach(item => parentElement.appendChild(item));
+    }
+
+    function reset() {
+      reverseButton.innerHTML = '↓☰';
+      unsafeWindow.player.next = oriVideoNext;
+      unsafeWindow.player.prev = oriVideoPrev;
     }
 
     function getScrollParent(el, direction = 'y') {
@@ -157,55 +230,27 @@ const biliHelper = {
       return document.documentElement; // 兜底返回根元素
     }
 
-    function reset() {
-      reverseButton.innerHTML = '↓☰';
-      unsafeWindow.player.next = oriVideoNext;
-      unsafeWindow.player.prev = oriVideoPrev;
-    }
-
-    // 旧-分P选集
-    if (ele.parentElement.classList.contains('cur-list')) {
-      reverseButton.style.color = '#757575';
-      reverseButton.style.fontWeight = 'bold';
-      ele.parentElement.previousElementSibling.firstElementChild.appendChild(reverseButton);
-    }
-    // 旧-合集
-    else if (ele.parentElement.classList.contains('video-sections-item')) {
-      // 多组
-      if (ele.previousElementSibling) {
-        reverseButton.style.opacity = '0.4';
-        ele.previousElementSibling.firstElementChild.appendChild(reverseButton);
-      }
-      // 单组
-      else
-        ele.parentElement.parentElement.previousElementSibling.querySelector('.second-line_left').appendChild(reverseButton);
-    }
-    // 新
-    else if (ele.classList.contains('video-pod__list')) {
-      // 多组
-      if (ele.parentElement.parentElement.querySelector('.video-pod__slide')) {
-        reverseButton.style.color = '#9499a0';
-        ele.parentElement.parentElement.querySelector('.header-bottom .left').appendChild(reverseButton);
-
-        document.querySelectorAll('.slide-item:not(.active)').forEach((item) => item.onclick = () => {
-          reset();
-          eplistContent.innerHTML = '';
-          eplistContentItems.forEach(item => {
-            eplistContent.appendChild(item);
-          });
-        });
-      }
-      // 单组
-      else {
-        document.querySelector('.video-pod .video-pod__header .left').appendChild(reverseButton);
-        if (document.querySelector('.video-pod__header .view-mode')) {
-          document.querySelector('.video-pod__header .view-mode').onclick = () => {
-            reset();
-            eplistContent.innerHTML = '';
-            eplistContentItems.forEach(item => {
-              eplistContent.appendChild(item);
-            });
-          };
+    function onVideoNearlyEnded() {
+      if ((document.querySelector('.continuous-btn .switch-btn.on') || video.__nearlyEnded) && reverseButton.innerHTML === '↑☰') {
+        const remaining = video.duration - video.currentTime;
+        if (remaining <= 1 && !video.__nearlyEnded) {
+          video.__nearlyEnded = true;
+          document.querySelector('.continuous-btn').click();
+        }
+        if (remaining <= 0.1 && !video.__almostEnded) {
+          video.__almostEnded = true;
+          unsafeWindow.player.goto(-1);
+          const ableAutoPlay = setInterval(() => {
+            if (document.querySelector('.continuous-btn .switch-btn.on')) {
+              video.__nearlyEnded = false;
+              video.__almostEnded = false;
+              clearInterval(ableAutoPlay);
+            }
+            else {
+              const offBtn = document.querySelector('.continuous-btn .switch-btn:not(.on)');
+              if (offBtn) offBtn.click();
+            }
+          }, 100);
         }
       }
     }
@@ -418,7 +463,15 @@ const biliHelper = {
       setDomBySelector([this.pVideoSelectPercent], ['.bpx-player-ctrl-eplist-menu', '.bpx-player-ctrl-eplist-episodes-content'], false);
     }, 100);
     const setVideoReverse = debounce(() => {
-      setDomBySelector([this.videoListReverse], ['.multi-page-v1 .cur-list .list-box', '.video-sections-content-list .video-section-list', '.video-pod .video-pod__body .video-pod__list']);
+      setDomBySelector(
+        [this.videoListReverse],
+        ['.multi-page-v1 .cur-list .list-box',
+          '.video-sections-content-list .video-section-list',
+          '.video-pod .video-pod__slide+.video-pod__body .video-pod__list',
+          '.video-pod .video-pod__body .video-pod__list.multip',
+          '.video-pod .video-pod__body .video-pod__list.section',
+          '.video-pod .video-pod__body .video-pod__list .multi-p .simple-base-item.active+.page-list']
+      );
     }, 100);
 
     // comment-lit框架
@@ -534,12 +587,6 @@ Object.defineProperty(unsafeWindow, '__INITIAL_STATE__', {
     rawState = value;
   }
 });
-
-// 禁止隐藏自动播放
-setInterval(() => {
-  GM_cookie.delete({ name: 'buvid3' });
-  GM_cookie.delete({ name: 'buvid4' });
-}, 1000);
 
 // 禁用弹幕智能云屏蔽
 // 参考https://github.com/the1812/Bilibili-Evolved/discussions/4920

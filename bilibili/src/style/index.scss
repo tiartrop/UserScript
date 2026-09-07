@@ -271,6 +271,10 @@ div[class^='SectionSelector_selectorDropdown'],
   }
 }
 
+.video-pod .video-pod__header .header-bottom .left {
+  color: var(--text3);
+}
+
 
 // 投稿人
 .upinfo-btn-panel .follow-btn {
@@ -467,6 +471,7 @@ div[class^='SectionSelector_selectorDropdown'],
   #rank-list-vm {
     height: 18px !important;
     background: unset;
+    z-index: -1;
 
     #rank-list-ctnr-box {
       height: 18px !important;
@@ -495,6 +500,10 @@ div[class^='SectionSelector_selectorDropdown'],
 
     .a-move-in-top {
       display: none;
+    }
+
+    .chat-overlay-layer {
+      background: transparent !important;
     }
   }
 

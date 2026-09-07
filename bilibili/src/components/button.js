@@ -4,10 +4,39 @@ const Button = new class {
     const button = document.createElement('button');
     button.innerHTML = '↓☰';
     button.className = 'reverse-button';
+    button.setAttribute('data-show', 'on');
     button.addEventListener('click', func, false);
 
     return button;
   };
+
+  // 视频自动连播按钮
+  continuous = (player) => {
+    const continuousElement = document.createElement('div');
+    continuousElement.className = 'continuous-btn';
+    continuousElement.innerHTML = `
+    <div class="txt">
+      自动连播
+    </div>
+    <div class="switch-btn">
+      <div class="switch-block">
+      </div>
+    </div>
+    `;
+    continuousElement.addEventListener('click', function () {
+      const btn = this.querySelector('.switch-btn');
+      if (btn.classList.contains('on')) {
+        btn.classList.remove('on');
+        player.setHandoff(2);
+      } else {
+        btn.classList.add('on');
+        player.setHandoff(0);
+      }
+    }, false);
+
+    return continuousElement;
+  };
+
 
   // 视频倍速菜单
   playRateMenu = (ele) => {

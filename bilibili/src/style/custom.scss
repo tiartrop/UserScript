@@ -61,7 +61,8 @@ $borderColor: #f9f9f9;
 }
 
 // 视频倒序按钮
-.reverse-button {
+.reverse-button[data-show="on"] {
+  display: block;
   padding: 0 4px;
   margin: 0 4px;
   border: none;
@@ -72,6 +73,70 @@ $borderColor: #f9f9f9;
     color: var(--brand_blue) !important;
   }
 }
+
+.reverse-button[data-show="off"] {
+  display: none;
+}
+
+// 视频自动连播按钮
+.switch-btn {
+  --switch-btn-width: 30px;
+  --switch-btn-height: 20px;
+  --switch-btn-gap: 2px;
+  cursor: pointer;
+  position: relative;
+  display: inline-block;
+  box-sizing: border-box;
+  border-radius: calc(var(--switch-btn-height) / 2);
+  border-radius: calc(var(--switch-btn-height) / 2);
+  width: var(--switch-btn-width);
+  width: var(--switch-btn-width);
+  height: var(--switch-btn-height);
+  height: var(--switch-btn-height);
+  background-color: var(--graph_bg_thick);
+  background-color: var(--graph_bg_thick);
+  transition: all 0.2s;
+}
+
+.switch-btn .switch-block {
+  position: absolute;
+  border-radius: 50%;
+  top: var(--switch-btn-gap);
+  top: var(--switch-btn-gap);
+  left: var(--switch-btn-gap);
+  left: var(--switch-btn-gap);
+  width: calc(var(--switch-btn-height) - calc(2 * var(--switch-btn-gap)));
+  width: calc(var(--switch-btn-height) - calc(2 * var(--switch-btn-gap)));
+  height: calc(var(--switch-btn-height) - calc(2 * var(--switch-btn-gap)));
+  height: calc(var(--switch-btn-height) - calc(2 * var(--switch-btn-gap)));
+  background-color: var(--text_white);
+  background-color: var(--text_white);
+  transition: all 0.2s;
+}
+
+.switch-btn.on {
+  background: var(--brand_blue);
+  background: var(--brand_blue);
+}
+
+.switch-btn.on .switch-block {
+  left: calc(calc(var(--switch-btn-width) - var(--switch-btn-height)) + var(--switch-btn-gap));
+  left: calc(calc(var(--switch-btn-width) - var(--switch-btn-height)) + var(--switch-btn-gap));
+}
+
+.continuous-btn {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.continuous-btn .txt {
+  color: var(--text3);
+  color: var(--text3);
+  font-size: 14px;
+  margin-right: 4px;
+}
+
 
 // 视频右键窗口倍速按钮
 .play-rate-menu {
