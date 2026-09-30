@@ -626,7 +626,7 @@ async function StartObservePage() {
   };
 
   setupObserver(['.right-container', '#bilibili-player'], videoCallback);
-  setupObserver(['.bili-dyn-list', '.space-dynamic__content'], dynamicCallback);
+  setupObserver(['.bili-dyn-list', '.space-main'], dynamicCallback);
   setupObserver(['.bili-dyn-list', '#commentapp'], commentCallback);
 
   // 控制面板

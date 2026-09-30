@@ -703,6 +703,7 @@ html[lab-style*="dark"] .player-full-win #aside-area-vm {
   overflow: visible !important;
 }
 
+
 /*
   投稿页简化
 */
@@ -716,6 +717,17 @@ html[lab-style*="dark"] .player-full-win #aside-area-vm {
   .cube-list .small-item .meta {
     justify-content: space-between;
   }
+}
+
+
+/* 专栏页 */
+
+.article-container p code {
+  color: var(--text2);
+  background: var(--bg3);
+  padding: 0 0.25em;
+  margin: 0 0.25em;
+  border-radius: 3px;
 }
 
 
