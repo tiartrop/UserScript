@@ -1,5 +1,6 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { readFile } from 'node:fs/promises';
 import { definePlugins } from '@gera2ld/plaid-rollup';
 import alias from "@rollup/plugin-alias";
 import nodePolyfills from 'rollup-plugin-polyfill-node';
@@ -13,6 +14,11 @@ const parentDirectory = path.basename(__dirname);
 const pathResolve = (dir) => {
   return path.resolve(__dirname, ".", dir);
 };
+
+const banner = await readFile(
+    pathResolve('src/banner.js'),
+    'utf8'
+);
 
 export default function bilibiliConfig(name = parentDirectory, entry = `${parentDirectory}/src/index`) {
   return {
@@ -41,10 +47,7 @@ export default function bilibiliConfig(name = parentDirectory, entry = `${parent
     output: {
       format: 'iife',
       file: `${parentDirectory}/dist/${name}.user.js`,
-      banner: `
-// 防止特殊直播间重复执行脚本
-if (location.href.match(/live.bilibili.com\\/[0-9]+/) && unsafeWindow.__initialState && unsafeWindow.__initialState.BaseInfo) return;
-`,
+      banner,
       footer: '',
       globals: {
         '@violentmonkey/dom': 'VM',

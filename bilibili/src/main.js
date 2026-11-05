@@ -613,21 +613,66 @@ async function StartObservePage() {
   await mscststs.wait('#app', true) || await mscststs.wait('#__next', true);
   const { videoCallback, dynamicCallback, commentCallback } = biliHelper.init();
 
-  const setupObserver = async (targets, callback, timeout = 10) => {
-    let page = null;
+  const observerRegistry = new Map();
 
-    for (const t of targets) {
-      page = await mscststs.wait(t, true, timeout);
-      if (page) {
-        const observer = new MutationObserver(callback);
-        observer.observe(page, config);
-      }
+  const observeDOM = (element, callback) => {
+    if (!(element instanceof Element)) return () => { };
+
+    let entry = observerRegistry.get(element);
+
+    if (!entry) {
+      entry = {
+        callbacks: new Set(),
+        observer: null
+      };
+
+      entry.observer = new MutationObserver((mutations, observer) => {
+        for (const cb of entry.callbacks) {
+          try {
+            cb(mutations, observer, element);
+          } catch (error) {
+            console.error('[MutationObserver]', error);
+          }
+        }
+      });
+
+      observerRegistry.set(element, entry);
+      entry.observer.observe(element, config);
     }
+
+    // Set 自动避免重复注册
+    entry.callbacks.add(callback);
+
+    // 返回取消订阅函数
+    return () => {
+      entry.callbacks.delete(callback);
+
+      if (entry.callbacks.size === 0) {
+        entry.observer.disconnect();
+        observerRegistry.delete(element);
+      }
+    };
   };
 
-  setupObserver(['.right-container', '#bilibili-player'], videoCallback);
-  setupObserver(['.bili-dyn-list', '.space-main'], dynamicCallback);
-  setupObserver(['.bili-dyn-list', '#commentapp'], commentCallback);
+  const setupObserver = async (targets, callback, timeout = 10) => {
+    const cleanups = [];
+
+    for (const selector of targets) {
+        const element = await mscststs.wait(selector, true, timeout);
+        cleanups.push(observeDOM(element, callback));
+    }
+
+    // 返回清理函数
+    // return () => cleanups.forEach(cleanup => cleanup());
+  };
+
+  const observerTasks = [
+    setupObserver(['.right-container', '#bilibili-player'], videoCallback),
+    setupObserver(['.bili-dyn-list', '.space-main'], dynamicCallback),
+    setupObserver(['.bili-dyn-list', '.space-main', '#commentapp'], commentCallback)
+  ];
+
+  await Promise.all(observerTasks);
 
   // 控制面板
   setTimeout(() => document.body.appendChild(containerElement), 2000);
