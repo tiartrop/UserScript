@@ -554,6 +554,9 @@ if (m('rollbackArticle') && location.href.match(/bilibili.com\/opus\/[0-9]+/)) {
   }, 100);
 }
 
+// 默认跳转正常直播间
+if (m('jumpNormalLiveRoom') && location.href.match(/live.bilibili.com\/[0-9]+/)) location.replace('//live.bilibili.com/blanc/' + location.pathname.match(/\d+/)[0]);
+
 // __INITIAL_STATE__ 只在首次赋值时拦截和处理
 let initialSet = false;
 let rawState;

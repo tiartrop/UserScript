@@ -13,7 +13,8 @@ const defaultSettings = {
   closeRecommendAutoPlay: true,
   closeMinPlayWindow: false,
   rollbackCommentVer: false,
-  rollbackArticle: false,
+  rollbackArticle: true,
+  jumpNormalLiveRoom: true,
   closeAiSummary: false,
   disableDanmukuAiBlock: true
 };
