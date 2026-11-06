@@ -555,7 +555,7 @@ if (m('rollbackArticle') && location.href.match(/bilibili.com\/opus\/[0-9]+/)) {
 }
 
 // 默认跳转正常直播间
-if (m('jumpNormalLiveRoom') && location.href.match(/live.bilibili.com\/[0-9]+/)) location.replace('//live.bilibili.com/blanc/' + location.pathname.match(/\d+/)[0]);
+if (m('jumpNormalLiveRoom') && location.href.match(/live.bilibili.com\/[0-9]+/) && unsafeWindow.__BILIACT_ENV__) location.replace(`//live.bilibili.com/blanc/${location.pathname.match(/\d+/)[0]}`);
 
 // __INITIAL_STATE__ 只在首次赋值时拦截和处理
 let initialSet = false;
@@ -661,8 +661,8 @@ async function StartObservePage() {
     const cleanups = [];
 
     for (const selector of targets) {
-        const element = await mscststs.wait(selector, true, timeout);
-        cleanups.push(observeDOM(element, callback));
+      const element = await mscststs.wait(selector, true, timeout);
+      cleanups.push(observeDOM(element, callback));
     }
 
     // 返回清理函数
